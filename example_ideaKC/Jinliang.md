@@ -27,6 +27,12 @@ After the DMRs were called, we could do a series of correlation studies to test 
 - DMR vs. GERP score or GERP elements?
 - DMR vs. fitness?
 
+## 2.1 use ANGSD to call genotype probility and recall the BS data
+
+- Tajima's D on genes to identify genes under selection using SMP
+- Compare with SNP estimated Tajima's D
+- Pathway? phylogenetic age of those genes?
+
 ## Idea 3: Map the genetic control for DMR?
 
 This part will only be possible when we get the progeny info of DMR.
