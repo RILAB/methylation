@@ -9,8 +9,8 @@ run_bedtools <- function(){
     files=list.files(path=dir, pattern="bed6$")
     outsh <- c(paste("cd", dir))
     for(i in 1:length(files)){
-        outfile <- gsub("bed12", "out", files[i])
-        temsh <- paste("bedtools intersect -a ~/dbcenter/AGP/AGPv3/AGPv3_gene.bed6", 
+        outfile <- gsub("bed6", "out", files[i])
+        temsh <- paste("bedtools intersect -a ~/dbcenter/AGP/AGPv2/FGSv2.bed4", 
                        "-b", files[i], "-sorted -loj >", outfile)
         outsh <- c(outsh, temsh)
     }
