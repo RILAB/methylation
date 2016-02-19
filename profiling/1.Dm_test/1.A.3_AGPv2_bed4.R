@@ -17,7 +17,7 @@ gene <- subset(gene, seqname %in% 1:10)
 bed4gene <- gene[, c("seqname", "start", "end", "attribute")]
 bed4gene$start <- bed4gene$start - 1
 
-bed4gene$seqname <- as.numeric(as.character(bed4gene$seqname))
+bed4gene$seqname <- as.character(bed4gene$seqname)
 bed4gene <- bed4gene[order(bed4gene$seqname, bed4gene$start),]
 write.table(bed4gene, "~/dbcenter/AGP/AGPv2/FGSv2.bed4", row.names=FALSE, col.names=FALSE, quote=FALSE, sep="\t")
 
