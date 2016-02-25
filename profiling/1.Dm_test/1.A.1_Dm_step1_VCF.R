@@ -67,7 +67,7 @@ run_bgzip(indir="/group/jrigrp4/BS_teo20/BSMAP_output")
 
 source("~/Documents/Github/zmSNPtools/Rcodes/setUpslurm.R")
 setUpslurm(slurmsh="slurm-script/run_bcf_merge.sh",
-           codesh= "cd largedata/vcf_files; bcftools merge -l vcflist.txt -o teo12_methratio.vcf -O b",
+           codesh= "cd /group/jrigrp4/BS_teo20/BSMAP_output; bcftools merge -l vcflist.txt -o teo12_methratio.vcf -O b",
            wd=NULL, jobid="bcfmerge", email="yangjl0930@gmail.com")
 ###>>> In this path: cd /home/jolyang/Documents/Github/methylation
 ###>>> [ note: --ntasks=INT, number of cup ]
