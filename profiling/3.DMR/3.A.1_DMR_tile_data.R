@@ -16,8 +16,15 @@ get_methyl_list <- function(dt=teo1, ids, outdir="", type="CG"){
         d$freqT <- round((d[,5] - d[,4])/d$coverage*100, 2)
         d <- d[, c(6,1,2,7:10)]
         names(d)[3] <- "base"
-        write.table(d, paste0(outdir, "/", ids[i], "_", type, ".txt"), sep="\t", row.names=FALSE, quote=FALSE)
-        message(sprintf("###>>> output the [ %s ] sample to [ %s ]", i, outdir))
+        
+        for(chri in 1:10){
+            sub <- subset(d, chr %in% paste0("chr", chri))
+            sub <- subset(sub, !is.na(coverage))
+            write.table(sub, paste0(outdir, "/", ids[i], "_", type, "_chr", chri, ".txt"), 
+                        sep="\t", row.names=FALSE, quote=FALSE)
+            message(sprintf("###>>> output the [ %s ] sample of [ chr%s ] to [ %s ]", i, chri, outdir))
+        }
+        
     }
 }
 
@@ -37,6 +44,5 @@ get_methyl_list(dt=teo2, ids, outdir="largedata/tiles", type="CG")
 mz <- fread("/group/jrigrp4/BS_teo20/3ZmInbreds_100bp_CG.tab")
 ids <- c("B73", "Mo17", "Oh43")
 get_methyl_list(dt=mz, ids, outdir="largedata/tiles", type="CG")
-
 
 
