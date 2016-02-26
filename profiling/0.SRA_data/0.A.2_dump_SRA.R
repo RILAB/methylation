@@ -19,9 +19,10 @@ run_fdump <- function(pwd="/group/jrigrp4/BS_teo20/WGBS", slurmsh="slurm-script/
 
 ########
 run_fdump(pwd="/group/jrigrp4/BS_teo20/WGBS", slurmsh="slurm-script/dump_WGBS.sh")
+###>>> RUN: sbatch -p bigmemh --ntasks=1 slurm-script/dump_WGBS.sh
 
 run_fdump(pwd="/group/jrigrp4/BS_teo20/RNA-seq", slurmsh="slurm-script/dump_RNA-seq.sh")
-
+###>>> RUN: sbatch -p bigmemh --ntasks=1 slurm-script/dump_RNA-seq.sh
 
 
 
