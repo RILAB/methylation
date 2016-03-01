@@ -62,7 +62,9 @@ myDiff25p.hypo = get.methylDiff(myDiff, difference = 25, qvalue = 0.01, type = "
 ## get all differentially methylated bases
 myDiff25p = get.methylDiff(myDiff, difference = 25, qvalue = 0.01)
 
-##########
+#1174955
+
+########## 2.6% hyper 10325, hypo 20779
 res <- read.csv("largedata/tiles/res_chr10_CG.csv")
 res1 <- subset(res, qval < 0.01 & abs(diff) > 25)
 plot(res1$start, -log2(res1$pval), type="p", cex=0.2, pch=16, col="darkblue")
