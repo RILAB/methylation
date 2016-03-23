@@ -14,7 +14,7 @@ fq$out <- paste(fq$out, gsub(".*Sample_|_index.*", "", fq$fq1), sep="/")
 
 library(farmeR)
 run_fermikit(fq, kitpath="/home/jolyang/bin/fermikit/fermi.kit",
-             s='3g', t=16, l=100, arrayjobs="1",
+             s='2.5g', t=16, l=100, arrayjobs="1",
              jobid="fermi", email="yangjl0930@gmail.com")
 
 ###>>> In this path: cd /home/jolyang/Documents/Github/methylation
