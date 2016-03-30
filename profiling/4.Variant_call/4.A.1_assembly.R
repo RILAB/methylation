@@ -22,6 +22,6 @@ run_fermikit(fq,kitpath="$HOME/bin/fermikit/fermi.kit",
 ###>>> In this path: cd /home/jolyang/Documents/Github/methylation
 ###>>> RUN: sbatch -p bigmemh --mem=128000 --ntasks=16 slurm-script/run_fermikit_array.sh
 
-run_fermikit_vcfcall(bamdir="$HOME/dbcenter/BMfastq/fermi", kitpath="$HOME/bin/fermikit",
+run_fermikit_vcfcall(bamdir="$HOME/dbcenter/BMfastq/fermi", kitpath="$HOME/bin/fermikit/fermi.kit",
                      ref.fa="$HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa",
                      email="yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemh", 1))
