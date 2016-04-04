@@ -39,7 +39,7 @@ c1 + c2 + c3
 
 
 library(farmeR)
-set_jupyter(port=9998)
+set_jupyter(port=9997)
 
 
 #Download CpG islands
