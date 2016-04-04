@@ -3,7 +3,7 @@
 
 library(data.table, lib="~/bin/Rlib/")
 
-m1 <- fread("/group/jrigrp4/BS_teo20/3ZmInbreds_100bp_CG.tab")
+m1 <- fread("/group/jrigrp4/BS_teo20/BSMAP_round2/JRA1_methratio.txt")
 m1 <- data.frame(m1)
 
 m1$chr <- gsub("chr", "", m1$chr)
