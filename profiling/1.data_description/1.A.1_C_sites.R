@@ -37,21 +37,8 @@ c3 <- sum(apply(c31, 1, sum)) + sum(apply(c32, 1, sum))
 c1 + c2 + c3
 #[1] 962803185
 
-
+#############################
 library(farmeR)
-set_jupyter(port=9997)
+set_jupyter(port=9998)
 
 
-#Download CpG islands
-library(rtracklayer)
-
-session <- browserSession("UCSC")
-genome(session) <- genome
-CpG <- track(ucscTableQuery(session, "cpgIslandExt"), asRangedData=FALSE)
-CpGshores <- setdiff(resize(CpG, width(CpG)+4000, fix="center"), CpG)
-
-CpG_annot <- split(CpGs, ifelse(overlapsAny(CpGs, CpG), "Island",
-                                ifelse(overlapsAny(CpGs, CpGshores), "Shore", "Other")))
-save(CpG_annot, file=paste(genome, "_CpG_annot.Rdata", sep=""))
-
-Status API Training Shop Blog About
