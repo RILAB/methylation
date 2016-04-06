@@ -28,7 +28,7 @@ p1 <- ggplot(subset(resl, type=="cov"), aes(x=context, y=value, fill=context)) +
           axis.text.y = element_text(size=13),
           axis.title = element_text(size=18, face="bold")) +
     #scale_fill_manual(values=c("#008080", "#003366", "#40e0d0")) +
-    ggtitle("Seqencing Depth") + xlab("") + ylab("Depth per cytosine site") + 
+    ggtitle("Sequencing Depth") + xlab("") + ylab("Depth per cytosine site") + 
     guides(fill=FALSE)
     #guides(colour=FALSE, linetype=FALSE)
 
