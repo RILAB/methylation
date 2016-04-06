@@ -5,4 +5,5 @@ packrat/lib*/
 packrat/src/
 largedata/
 slurm-log/
+slurm-script/
 .DS_Store
