@@ -14,6 +14,7 @@ inputdf$out <- gsub(".sra.*", "", inputdf$fq1)
 inputdf$out <- gsub("BMfastq", "BMfastq/bam", inputdf$out)
 
 ###########
+library(farmeR)
 run_GATK(inputdf, 
          ref.fa="$HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa",
          gatkpwd="$HOME/bin/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar",
@@ -24,18 +25,18 @@ run_GATK(inputdf,
          runinfo = c(TRUE, "bigmemh", 4))
 
 ####### joint variant calling
-gvcf <- list.files(path="~/dbcenter/BMfastq/bam", pattern="vcf$", full.names = TRUE)
+gvcf <- list.files(path="~/dbcenter/BMfastq/bam", pattern="g.vcf$", full.names = TRUE)
 outvcf <- "~/dbcenter/BMfastq/bam/joint_call.vcf"
 run_GATK_JointGenotype(
-    gvcf,
-    outvcf,
+    gvcf, outvcf,
     ref.fa="$HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa",
     gatkpwd="$HOME/bin/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar",
-    includeNonVariantSites = TRUE,
-    hardfilter= FALSE,
+    includeNonVariantSites = FALSE,
+    hardfilter= TRUE,
     snpflt="\"QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0\"",
     indelflt="\"QD < 2.0 || FS > 200.0 || ReadPosRankSum < -20.0\"",
     email="yangjl0930@gmail.com",
-    runinfo = c(TRUE, "bigmemh", 4) )
+    runinfo = c(TRUE, "bigmemh", 4)
+)
 
 
