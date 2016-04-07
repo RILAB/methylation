@@ -11,9 +11,24 @@ inputdf <- data.frame(
     sample=gsub(".*sorted.|_index.*", "", bamfile),
     PL="illumina", LB="lib1", PU="unit1")
 inputdf$out <- gsub("sorted.|_index.*", "", inputdf$out)
+
+
+#####################
+fq1 <- list.files(path="/group/jrigrp/teosinte-parents/seq-merged", pattern="_1.fastq.gz$", full.names = TRUE)
+fq2 <- list.files(path="/group/jrigrp/teosinte-parents/seq-merged", pattern="_2.fastq.gz$", full.names = TRUE)
+
+sampleid <- read.table("~/dbcenter/BMfastq/sampleid.txt", header=TRUE)
+
+inputdf <- data.frame(fq1=fq1, fq2=fq2, 
+                      out="/home/jolyang/Documents/Github/methylation/largedata/bam",
+                      group=paste0("g",1:length(fq1)), 
+                      sample=gsub(".*Sample_|_index.*", "", fq1), PL="illumina", 
+                      LB="lib1", PU="unit1")
+inputdf$out <- paste(inputdf$out, inputdf$sample, sep="/")
+
 ###########
 library(farmeR)
-run_GATK(inputdf, 
+run_GATK(inputdf[1,], 
          ref.fa="$HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa",
          gatkpwd="$HOME/bin/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar",
          picardpwd="$HOME/bin/picard-tools-2.1.1/picard.jar",
@@ -21,7 +36,7 @@ run_GATK(inputdf,
          markDup=TRUE, realignInDels=FALSE, indels.vcf="indels.vcf",
          recalBases=FALSE, dbsnp.vcf="dbsnp.vcf", 
          email="yangjl0930@gmail.com",
-         runinfo = c(TRUE, "bigmemm", 8))
+         runinfo = c(TRUE, "bigmemm", 16))
 
 ####### joint variant calling
 gvcf <- list.files(path="~/dbcenter/BMfastq/bam", pattern="g.vcf$", full.names = TRUE)
