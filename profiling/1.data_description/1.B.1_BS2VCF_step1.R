@@ -1,34 +1,19 @@
 ### Jinliang Yang
 ### Convert the BSMAP to BED12 format
 
-source("~/Documents/Github/zmSNPtools/Rcodes/set_arrayjob.R")
-run_bs2vcf <- function(indir="/group/jrigrp4/BS_teo20/BSMAP_output"){
-    
-    files=list.files(path=indir, pattern="txt$")
-    for(i in 1:length(files)){
-        outfile <- gsub("txt", "vcf", files[i])
-        
-        shid <- paste0("slurm-script/run_bs2vcf_", i, ".sh")
-        #out <- gsub(".*/", "", out)
-        #outfile <- paste0(outdir, "/", out)
-        cmd <- paste("bs2vcf -p", indir,  "-i", files[i], "-o", outfile)
-        
-        cat(cmd, file=shid, sep="\n", append=FALSE)
-    }
-    
-    set_arrayjob(shid="slurm-script/run_array_bs2vcf.sh",
-                 shcode=paste0("sh slurm-script/run_bs2vcf_$SLURM_ARRAY_TASK_ID.sh"),
-                 arrayjobs="1-12",
-                 wd=NULL, jobid="bs2vcf", email="yangjl0930@gmail.com")
-    
-}
-##### run python scrip `bs2bed12` convert txt to bed12 format
-## bs2bed -p /group/jrigrp4/BS_teo20/BSMAP_output -i bsinput_test.txt -o bsinput_test.out -v 1
-run_bs2vcf(indir="/group/jrigrp4/BS_teo20/BSMAP_output")
-###>>> In this path: cd /home/jolyang/Documents/Github/methylation
-###>>> [ note: --ntasks=INT, number of cup ]
-###>>> [ note: --mem=16000, 16G memory ]
-###>>> RUN: sbatch -p bigmemh slurm-script/run_array_bs2vcf.sh
+indir= "/group/jrigrp4/BS_teo20/BSMAP_round2"
+outdir= "/home/jolyang/Documents/Github/methylation/largedata/vcf_files/"
+files=list.files(path=indir, pattern="txt$", full.names = TRUE)
+inputdf <- data.frame(bsmap=files, out=paste0(outdir, gsub(".*/|txt", "", files), "vcf") )
+
+
+library(farmeR)
+run_bs2vcf(inputdf, email="yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemm", 1))
+## bs2vcf -p /group/jrigrp4/BS_teo20/BSMAP_output -i test_methratio.txt -o test_methratio.vcf
+
+
+
+
 
 
 
@@ -75,4 +60,6 @@ setUpslurm(slurmsh="slurm-script/run_bcf_merge.sh",
 ###>>> RUN: sbatch -p bigmemh --ntasks=2 mem 16000 slurm-script/run_bcf_merge.sh
 
 # bcftools index bcftools index teo12_methratio.vcf.gz
-#bcftools query -f '%ID\t%CO[\t%CC\t%CT]\n' -r 1:0-10000 JRH2_methratio.vcf.gz -o test.txt
+
+#bgzip test_methratio.vcf; tabix -p vcf test_methratio.vcf.gz
+#bcftools query -f '%ID\t%CO[\t%RA]\n' -r 1:0-10000 test_methratio.vcf.gz -o test_RA.txt

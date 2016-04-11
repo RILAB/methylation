@@ -7,9 +7,11 @@ fq2 <- list.files(path="~/dbcenter/BMfastq", pattern="_2.fastq.gz$", full.names 
 
 sampleid <- read.table("~/dbcenter/BMfastq/sampleid.txt", header=TRUE)
 
-inputdf <- data.frame(fq1=fq1[c(1,17)], fq2=fq2[c(1,17)], out="mysample",
+bam <- list.files(path="~/dbcenter/BMfastq/bam", pattern="bam$", full.names = TRUE)
+inputdf <- data.frame(fq1=fq1[c(1,7)], fq2=fq2[c(1,7)], out="mysample",
                       group=c("g1", "g2"), sample=c("Mo17", "B73"), PL="illumina", 
-                      LB=c("lib1", "lib2"), PU=c("unit1", "unit2"))
+                      LB=c("lib1", "lib2"), PU=c("unit1", "unit2"),
+                      bam=bam[c(1,3)])
 inputdf$out <- gsub(".sra.*", "", inputdf$fq1)
 inputdf$out <- gsub("BMfastq", "BMfastq/bam", inputdf$out)
 
@@ -19,11 +21,11 @@ run_GATK(inputdf,
          ref.fa="$HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa",
          gatkpwd="$HOME/bin/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar",
          picardpwd="$HOME/bin/picard-tools-2.1.1/picard.jar",
-         minscore = 5,
-         markDup=TRUE, realignInDels=FALSE, indels.vcf="indels.vcf",
+         minscore = 5, markDup=TRUE, addRG=TRUE,
+         realignInDels=FALSE, indels.vcf="indels.vcf",
          recalBases=FALSE, dbsnp.vcf="dbsnp.vcf", 
          email="yangjl0930@gmail.com",
-         runinfo = c(TRUE, "bigmemh", 4))
+         runinfo = c(FALSE, "bigmemm", 16))
 
 ####### joint variant calling
 gvcf <- list.files(path="~/dbcenter/BMfastq/bam", pattern="g.vcf$", full.names = TRUE)
