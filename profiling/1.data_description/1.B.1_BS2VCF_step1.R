@@ -28,6 +28,7 @@ run_bgzip <- function(indir="/group/jrigrp4/BS_teo20/BSMAP_output"){
                   runinfo = c(FALSE, "bigmemm", "1"))
 }
 
+#bgzip test_methratio.vcf; tabix -p vcf test_methratio.vcf.gz
 run_bgzip(indir="~/Documents/Github/methylation/largedata/vcf_files")
 ###>>> In this path: cd /home/jolyang/Documents/Github/methylation
 ###>>> RUN: sbatch -p bigmemm --mem 8196 --ntasks=1 slurm-script/run_bgzip.sh
@@ -37,7 +38,8 @@ system("ls | grep 'vcf.gz' > vcflist.txt")
 
 library(farmeR)
 shcode <- c("cd ~/Documents/Github/methylation/largedata/vcf_files", 
-            "bcftools merge -l vcflist.txt -o teo20_methratio.vcf -O b --force-samples")
+            "bcftools merge -l vcflist.txt -o teo20_methratio.bcf -O b --force-samples",
+            "bcftools index teo20_methratio.bcf")
 set_farm_job(slurmsh="slurm-script/run_bcf_merge.sh", shcode=shcode,
            wd=NULL, jobid="bcfmerge", email="yangjl0930@gmail.com",
            runinfo=c(TRUE, "bigmemh", "2"))
@@ -48,5 +50,11 @@ set_farm_job(slurmsh="slurm-script/run_bcf_merge.sh", shcode=shcode,
 
 # bcftools index bcftools index teo12_methratio.vcf.gz
 
-#bgzip test_methratio.vcf; tabix -p vcf test_methratio.vcf.gz
-#bcftools query -f '%ID\t%CO[\t%RA]\n' -r 1:0-10000 test_methratio.vcf.gz -o test_RA.txt
+
+#bcftools query -f '%ID\t%CO[\t%RA]\n' -r 1:0-10000 teo20_methratio.bcf -o test_RA.txt
+library(farmeR)
+shcode <- c("cd ~/Documents/Github/methylation/largedata/vcf_files",
+            "bcftools query -f \'%ID\\t%CO[\\t%RA]\\n\' teo20_methratio.bcf -o teo20_RA.txt")
+set_farm_job(slurmsh="slurm-script/run_bcfra.sh", shcode=shcode,
+             wd=NULL, jobid="bcfra", email="yangjl0930@gmail.com",
+             runinfo=c(FALSE, "bigmemh", "2"))
