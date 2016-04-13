@@ -35,13 +35,14 @@ run_bgzip(indir="~/Documents/Github/methylation/largedata/vcf_files")
 system("ls | grep 'vcf.gz' > vcflist.txt")
 #bcftools merge -l vcflist.txt -o teo12_methratio.vcf -O b
 
-source("~/Documents/Github/zmSNPtools/Rcodes/setUpslurm.R")
-set_farm_job(slurmsh="slurm-script/run_bcf_merge.sh",
-           codesh= "cd /group/jrigrp4/BS_teo20/BSMAP_output; bcftools merge -l vcflist.txt -o teo12_methratio.vcf -O b",
+library(farmeR)
+shcode <- c("cd ~/Documents/Github/methylation/largedata/vcf_files", 
+            "bcftools merge -l vcflist.txt -o teo20_methratio.vcf -O b --force-samples")
+set_farm_job(slurmsh="slurm-script/run_bcf_merge.sh", shcode=shcode,
            wd=NULL, jobid="bcfmerge", email="yangjl0930@gmail.com",
-           runinfo=c(TRUE, "bigmemh", "3"))
-###>>> In this path: cd /home/jolyang/Documents/Github/methylation
-###>>> [ note: --ntasks=INT, number of cup ]
+           runinfo=c(TRUE, "bigmemh", "2"))
+###>>> sbatch -p bigmemh --mem 16392 --ntasks=2 slurm-script/run_bcf_merge.sh
+
 ###>>> [ note: --mem=16000, 16G memory ]
 ###>>> RUN: sbatch -p bigmemh --ntasks=2 mem 16000 slurm-script/run_bcf_merge.sh
 
