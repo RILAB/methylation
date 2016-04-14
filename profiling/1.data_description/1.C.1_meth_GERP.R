@@ -32,15 +32,17 @@ get_cx_stat <- function(gerp, cx){
     cx <- setkey(cx, V1)
     setnames(cx, "V1", "snpid")
     cx1 <- merge(gerp, cx, by="snpid")
-    cx1[cx1 == "."] <- NA
-    cx1 <- as.data.frame(cx1)
     
-    cx1[, 7:26] <- apply(cx1[,7:26], 2, as.numeric)
+    cx1 <- as.data.frame(cx1)
+    cx1[cx1 == "."] <- NA
+    cx1[, 7:26] <- apply(cx1[, 7:26], 2, as.numeric)
+    
     cx1$mean <- apply(cx1[, 7:26], 1, function(x) mean(x, na.rm=T) )
     cx1$var <- apply(cx1[, 7:26], 1, function(x) var(x, na.rm=T) )
     return(cx1)
 }
 
+###########
 library("data.table")
 ob <- load("largedata/chr10.RData")
 
@@ -48,9 +50,6 @@ cg <- get_cx_stat(gerp=gerp1, cx= chr10[V2 == "CG"])
 chg <- get_cx_stat(gerp=gerp1, cx= chr10[V2 == "CHG"])
 chh <- get_cx_stat(gerp=gerp1, cx= chr10[V2 == "CHH"])
 
-cg2 <- get_cx_stat(gerp=gerp2, cx= chr10[V2 == "CG"])
-chg2 <- get_cx_stat(gerp=gerp2, cx= chr10[V2 == "CHG"])
-chh2 <- get_cx_stat(gerp=gerp2, cx= chr10[V2 == "CHH"])
 
 cg$cx <- "CG"
 chg$cx <- "CHG"
@@ -133,8 +132,41 @@ cor.test(chh2$RS, chh2$mean) #-0.03762805
 cor.test(chh2$RS, chh2$var) #-0.0392184 
 
 
+#############################
+get_cx_stat9 <- function(cx=chr10[V2 == "CG"], cx1=cg, cx2=cg2){
+    
+    cx <- as.data.frame(cx)
+    cx <- subset(cx, !(V1 %in% c(cx1$snpid, cx2$snpid)))
+    
+    cx[cx == "."] <- NA
+    cx[, 3:22] <- apply(cx[, 3:22], 2, as.numeric)
+    
+    cx$mean <- apply(cx[, 3:22], 1, function(x) mean(x, na.rm=T) )
+    #cx$var <- apply(cx[, 3:22], 1, function(x) var(x, na.rm=T) )
+    return(cx)
+}
+#########
+cg9 <- get_cx_stat9(cx=chr10[V2 == "CG"], cx1=cg, cx2=cg2)
+chg9 <- get_cx_stat9(cx=chr10[V2 == "CHG"], cx1=chg, cx2=chg2)
+chh9 <- get_cx_stat9(cx=chr10[V2 == "CHH"], cx1=chh, cx2=chh2)
+
+cg9$cx <- "CG"
+chg9$cx <- "CHG"
+chh9$cx <- "CHH"
 
 
+myd1 <- condense(bin(cg9$mean, .01), summary="mean")
+myd2 <- condense(bin(chg9$mean, .01), summary="mean")
+myd3 <- condense(bin(chh9$mean, .01), summary="mean")
+
+dat9 <- rbind(cg9[, c( "mean", "cx")], 
+              chg9[, c("mean", "cx")], 
+              chh9[, c("mean", "cx")])
 
 
+myd <- condense(bin(chh9$carat, .1), z=mydiamonds$price, summary="mean")
+
+#######
+library(bigvis)
+autoplot(dat9)
 

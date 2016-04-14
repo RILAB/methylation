@@ -45,7 +45,8 @@ dev.off()
 
 dat$gerp <- "pos"
 dat2$gerp <- "neg"
-res <- rbind(dat, dat2)
+dat9$gerp <- "non"
+res <- rbind(dat[, c("mean", "cx", "gerp")], dat2[, c("mean", "cx", "gerp")], dat9)
 
 p1 <- ggplot(res, aes(x=cx, y=mean, fill=gerp)) +
     geom_boxplot() +
@@ -58,3 +59,9 @@ p1 <- ggplot(res, aes(x=cx, y=mean, fill=gerp)) +
     ggtitle("Sequencing Depth") + xlab("") + ylab("Depth per cytosine site") + 
     guides(fill=FALSE)
 #guides(colour=FALSE, linetype=FALSE)
+
+pdf("graphs/gerp_three_cat.pdf", width=6, height=5)
+p1
+dev.off()
+
+
