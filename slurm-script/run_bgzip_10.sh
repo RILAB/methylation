@@ -1,2 +1,2 @@
-cd /group/jrigrp4/BS_teo20/BSMAP_output
-bgzip JRG1_GTGAAA_methratio.vcf; tabix -p vcf JRG1_GTGAAA_methratio.vcf.gz
+cd ~/Documents/Github/methylation/largedata/vcf_files
+bgzip JRD1_methratio.vcf; tabix -p vcf JRD1_methratio.vcf.gz

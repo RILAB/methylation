@@ -1,30 +1,30 @@
 ### GATK pipeline created by farmeR
-### Mon Apr 04 03:13:49 PM 2016
+### Tue Apr 12 10:16:08 AM 2016
 
 ### Generate a SAM file containing aligned reads
-bwa mem -M -R '@RG\tID:g1\tSM:Mo17\tPL:illumina\tLB:lib1\tPU:unit1' -T 5 -t 4 $HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa /home/jolyang/dbcenter/BMfastq/SRR447948.sra_1.fastq.gz /home/jolyang/dbcenter/BMfastq/SRR447948.sra_2.fastq.gz > /home/jolyang/dbcenter/BMfastq/bam/SRR447948.aln.sam
+bwa mem -M -R '@RG\tID:g1\tSM:s1\tPL:illumina\tLB:lib1\tPU:unit1' -T 5 -t 2 ~/dbcenter/Ecoli/reference/Ecoli_k12_MG1655.fasta fq_1.fq f1_2.fq > mysample.aln.sam
 
-java -Xmx32g -jar $HOME/bin/picard-tools-2.1.1/picard.jar SortSam \
-    INPUT=/home/jolyang/dbcenter/BMfastq/bam/SRR447948.aln.sam \
-    OUTPUT=/home/jolyang/dbcenter/BMfastq/bam/SRR447948.sorted.bam \
+java -Xmx16g -jar $HOME/bin/picard-tools-2.1.1/picard.jar SortSam \
+    INPUT=mysample.aln.sam \
+    OUTPUT=mysample.sorted.bam \
     SORT_ORDER=coordinate
-rm /home/jolyang/dbcenter/BMfastq/bam/SRR447948.aln.sam
+#rm mysample.aln.sam
 
 ### Mark duplicates
-java -Xmx32g -jar $HOME/bin/picard-tools-2.1.1/picard.jar MarkDuplicates \
-INPUT=/home/jolyang/dbcenter/BMfastq/bam/SRR447948.sorted.bam \
-OUTPUT=/home/jolyang/dbcenter/BMfastq/bam/SRR447948.sorted.dedup.bam \
-METRICS_FILE=/home/jolyang/dbcenter/BMfastq/bam/SRR447948_metrics.txt
+java -Xmx16g -jar $HOME/bin/picard-tools-2.1.1/picard.jar MarkDuplicates \
+INPUT=mysample.sorted.bam \
+OUTPUT=mysample.sorted.dedup.bam \
+METRICS_FILE=mysample_metrics.txt
 
-java -Xmx32g -jar $HOME/bin/picard-tools-2.1.1/picard.jar BuildBamIndex \
-INPUT=/home/jolyang/dbcenter/BMfastq/bam/SRR447948.sorted.dedup.bam
+java -Xmx16g -jar $HOME/bin/picard-tools-2.1.1/picard.jar BuildBamIndex \
+INPUT=mysample.sorted.dedup.bam
 
-samtools flagstat /home/jolyang/dbcenter/BMfastq/bam/SRR447948.sorted.bam > /home/jolyang/dbcenter/BMfastq/bam/SRR447948.sorted.bam.log
+samtools flagstat mysample.sorted.bam > mysample.sorted.bam.log
 
 ### Call variants in your sequence data
-java -Xmx32g -jar $HOME/bin/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar \
+java -Xmx16g -jar $HOME/bin/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar \
 -T HaplotypeCaller \
--R $HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa \
--I /home/jolyang/dbcenter/BMfastq/bam/SRR447948.sorted.dedup.bam \
+-R ~/dbcenter/Ecoli/reference/Ecoli_k12_MG1655.fasta \
+-I mysample.sorted.dedup.bam \
 -ERC GVCF \
--o /home/jolyang/dbcenter/BMfastq/bam/SRR447948.g.vcf
+-o mysample.g.vcf

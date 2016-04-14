@@ -2,8 +2,8 @@
 #SBATCH -D /home/jolyang/Documents/Github/methylation
 #SBATCH -o /home/jolyang/Documents/Github/methylation/slurm-log/testout-%j.txt
 #SBATCH -e /home/jolyang/Documents/Github/methylation/slurm-log/err-%j.txt
-#SBATCH -J bigzip
-#SBATCH --array=1-12
+#SBATCH -J bgzip
+#SBATCH --array=1-20
 #SBATCH --mail-user=yangjl0930@gmail.com
 #SBATCH --mail-type=END
 #SBATCH --mail-type=FAIL #email if fails
