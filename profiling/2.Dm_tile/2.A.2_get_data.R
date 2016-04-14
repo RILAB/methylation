@@ -22,13 +22,14 @@ write.table(bed3, "largedata/Dm/FGSv2_gene.bed3", row.names=FALSE, col.names=FAL
 
 ##############
 library(farmeR)
-shcode <- paste0("bcftools query -f \'%CHROM\\t%POS\\t%CO[\\t%GT]\\n\'", 
+sh1 <- paste0("bcftools query -f \'%CHROM\\t%POS\\t%CO[\\t%GT]\\n\'", 
                  " -R ~/Documents/Github/methylation/largedata/Dm/FGSv2_gene.bed3",
                  " ~/Documents/Github/methylation/largedata/vcf_files/teo20_methratio.bcf",
                  " -o ~/Documents/Github/methylation/largedata/Dm/FGSv2_gene_GT.txt")
+sh2 <- 'sed -i \"s/\\//\\t/g\" FGSv2_gene_GT.txt'
 #sed -i "s/\//\t/g" FGSv2_gene_GT.txt 
-set_farm_job(slurmsh="slurm-script/run_bcf_RA.sh", shcode=shcode,
+set_farm_job(slurmsh="slurm-script/run_bcf_GT.sh", shcode=c(sh1, sh2),
              wd=NULL, jobid="bcf_gt", email="yangjl0930@gmail.com",
-             runinfo=c(TRUE, "bigmemh", "2"))
+             runinfo=c(FALSE, "bigmemh", "2"))
 
 
