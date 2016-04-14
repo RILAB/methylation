@@ -1,27 +1,25 @@
 ### Jinliang Yang
-### use Li Heng's De novo assembly based variant calling pipeline
-### 3/22/2016
+### GATK best practice to call SNP and InDels for teo20
+### 4/6/2016
 
-fq1 <- list.files(path="~/dbcenter/BMfastq", pattern="_1.fastq.gz$", full.names = TRUE)
-fq2 <- list.files(path="~/dbcenter/BMfastq", pattern="_2.fastq.gz$", full.names = TRUE)
 
-sampleid <- read.table("~/dbcenter/BMfastq/sampleid.txt", header=TRUE)
-
-bam <- list.files(path="~/dbcenter/BMfastq/bam", pattern="bam$", full.names = TRUE)
-inputdf <- data.frame(fq1=fq1[c(1,7)], fq2=fq2[c(1,7)], out="mysample",
-                      group=c("g1", "g2"), sample=c("Mo17", "B73"), PL="illumina", 
-                      LB=c("lib1", "lib2"), PU=c("unit1", "unit2"),
-                      bam=bam[c(1,3)])
-inputdf$out <- gsub(".sra.*", "", inputdf$fq1)
-inputdf$out <- gsub("BMfastq", "BMfastq/bam", inputdf$out)
+bamfile <- list.files(path="/group/jrigrp4/teosinte-parents/20parents/bams",
+                      pattern="sorted.*bam$", full.names=TRUE)
+inputdf <- data.frame(
+    bam=bamfile, 
+    out=gsub(".*20parents/bams","/home/jolyang/Documents/Github/methylation/largedata/gatk_vcf", bamfile), 
+    group="1", 
+    sample=gsub(".*sorted.|_index.*", "", bamfile),
+    PL="illumina", LB="lib1", PU="unit1")
+inputdf$out <- gsub("sorted.|_index.*", "", inputdf$out)
 
 ###########
 library(farmeR)
-run_GATK(inputdf, 
+run_GATK(inputdf[1,], 
          ref.fa="$HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa",
          gatkpwd="$HOME/bin/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar",
          picardpwd="$HOME/bin/picard-tools-2.1.1/picard.jar",
-         minscore = 5, markDup=TRUE, addRG=TRUE,
+         minscore = 5, markDup=TRUE, addRG=TRUE, 
          realignInDels=FALSE, indels.vcf="indels.vcf",
          recalBases=FALSE, dbsnp.vcf="dbsnp.vcf", 
          email="yangjl0930@gmail.com",
@@ -42,4 +40,5 @@ run_GATK_JointGenotype(
     runinfo = c(TRUE, "bigmemh", 4)
 )
 
-
+#WARN  23:53:16,436 Interpreter - ![38,47]: 'QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0;' undefined variable MQRankSum 
+#WARN  23:55:50,098 Interpreter - ![26,40]: 'QD < 2.0 || FS > 200.0 || ReadPosRankSum < -20.0;' undefined variable ReadPosRankSum 

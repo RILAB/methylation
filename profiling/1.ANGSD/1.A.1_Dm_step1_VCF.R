@@ -75,4 +75,4 @@ setUpslurm(slurmsh="slurm-script/run_bcf_merge.sh",
 ###>>> RUN: sbatch -p bigmemh --ntasks=2 mem 16000 slurm-script/run_bcf_merge.sh
 
 # bcftools index bcftools index teo12_methratio.vcf.gz
-#bcftools query -f '%ID\t%CO[\t%CC\t%CT]\n' -r 1:0-10000 JRH2_methratio.vcf.gz -o test.txt
+#bcftools query -f '%ID\t%CO[\t%CC\t%CT]\n' -r 1:0-10000 teo12_methratio.bcf.gz -o test.txt
