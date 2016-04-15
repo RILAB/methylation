@@ -1,4 +1,10 @@
 
+dat$gerp <- "pos"
+dat2$gerp <- "neg"
+dat9$gerp <- "non"
+res <- rbind(dat[, c("mean", "cx", "gerp")], dat2[, c("mean", "cx", "gerp")], dat9)
+
+res <- condense(bin(res$mean, .1), z=mydiamonds$price, summary="mean")
 
 # use bigvis to bin, condense, smooth and present data
 library('bigvis')

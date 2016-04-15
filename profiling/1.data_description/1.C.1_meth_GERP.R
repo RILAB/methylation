@@ -164,7 +164,7 @@ dat9 <- rbind(cg9[, c( "mean", "cx")],
               chh9[, c("mean", "cx")])
 
 
-myd <- condense(bin(chh9$carat, .1), z=mydiamonds$price, summary="mean")
+myd1 <- condense(bin(chh9$carat, .1), z=mydiamonds$price, summary="mean")
 
 #######
 library(bigvis)

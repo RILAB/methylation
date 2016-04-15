@@ -48,7 +48,11 @@ dat2$gerp <- "neg"
 dat9$gerp <- "non"
 res <- rbind(dat[, c("mean", "cx", "gerp")], dat2[, c("mean", "cx", "gerp")], dat9)
 
-p1 <- ggplot(res, aes(x=cx, y=mean, fill=gerp)) +
+
+idx <- sample(1:nrow(res), 100000)
+res0 <- res[idx, ]
+
+p1 <- ggplot(res0, aes(x=cx, y=mean, fill=factor(gerp, levels=c("pos", "neg", "non")))) +
     geom_boxplot() +
     theme_bw() +
     theme(plot.title = element_text(color="red", size=20, face="bold.italic"),
@@ -56,11 +60,11 @@ p1 <- ggplot(res, aes(x=cx, y=mean, fill=gerp)) +
           axis.text.y = element_text(size=13),
           axis.title = element_text(size=18, face="bold")) +
     #scale_fill_manual(values=c("#008080", "#003366", "#40e0d0")) +
-    ggtitle("Sequencing Depth") + xlab("") + ylab("Depth per cytosine site") + 
-    guides(fill=FALSE)
+    labs(fill="GERP") +
+    ggtitle("") + xlab("") + ylab("Methylation Ratio")
 #guides(colour=FALSE, linetype=FALSE)
 
-pdf("graphs/gerp_three_cat.pdf", width=6, height=5)
+pdf("graphs/gerp_three_cat.pdf", width=8, height=6)
 p1
 dev.off()
 
