@@ -14,4 +14,5 @@
 # angsd -doSaf 1 -vcf-gl test.vcf -anc ZmB73_faked_v2.fasta -fai ZmB73_faked_v2.fasta.fai -nind 12 -out outFold -fold 1
 
 # NB The 4.2 version of the vcf specifiation clarifies that GP should be phred scaled post probs of the genotypes. 
-# But it seems that most software is using non-phred scale. So ANGSD uses the raw GP value. The GL tag is interpreted as log10.
+# But it seems that most software is using non-phred scale. So ANGSD uses the raw GP value. 
+# The GL tag is interpreted as log10.
