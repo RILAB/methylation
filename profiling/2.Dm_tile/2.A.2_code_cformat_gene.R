@@ -55,7 +55,7 @@ JOBID <- as.numeric(as.character(args[1]))
 
 
 cmdno = 100
-files <- list.files(path="~/Documents/Github/methylation/largedata/Dm/region_input", full.names=TRUE)
+files <- list.files(path="~/Documents/Github/methylation/largedata/Dm/gene_input", full.names=TRUE)
 inputdf <- data.frame(file=files, out="n")
 tot <- ceiling(nrow(inputdf)/cmdno)
 
