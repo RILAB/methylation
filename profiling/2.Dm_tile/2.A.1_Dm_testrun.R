@@ -21,10 +21,7 @@ write.table(lenlist, "largedata/Dm/lenlist.txt", sep="\t", row.names=FALSE, col.
 # alpha_estimation.pl
 #alpha_estimation.pl -dir /home/jolyang/Documents/Github/methylation/largedata/Dm -output /home/jolyang/Documents/Github/methylation/largedata/smp_a.txt -length_list /home/jolyang/Documents/Github/methylation/largedata/Dm/lenlist.txt
 
-#Dm_methylation.pl -input test_input.txt -output out_dm.txt -length 3485 -alpha 0.327154136568751
-
-
-
+#Dm_methylation.pl -input gene_CG/GRMZM2G137108_cg -output out_dm.txt -length 20 -alpha 1000000
 
 
 library("data.table", lib="~/bin/Rlib")

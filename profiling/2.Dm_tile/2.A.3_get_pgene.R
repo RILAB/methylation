@@ -5,21 +5,42 @@ library("data.table")
 gt <- fread("largedata/Dm/FGSv2_gene_GT_t.txt")
 
 
-tem$V3 <- apply(tem, 1, function(x) sum(x=="."))
+C_format <- function(minsite=10){
+    files <- list.files(path="largedata/Dm/input_gene", full.names=TRUE)
+    
+    df1 <- df2 <- df3 <- data.frame()
+    for(i in 1:length(files)){
+        onegene <- try(read.table(files[i], header=FALSE), silent = TRUE)
+        if (!inherits(onegene, 'try-error')){
+            onegene$miss <- apply(onegene, 1, function(x) sum(x=="."))
+            onegene <- subset(onegene, miss==0)
+            
+            #chg <- subset(onegene, V3 == "CHG")
+            #chh <- subset(onegene, V3 == "CHH")
+            
+            cg <- subset(onegene, V3 == "CG")
+            if(nrow(cg) > minsite){
+                outcg <- paste0(gsub("input_gene", "gene_CG", files[i]), "_cg")
+                write.table(cg[, c(1:2, 4:43)], outcg, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+                tem1 <- data.frame(file=outcg, sites=nrow(cg))
+                df1 <- rbind(df1, tem1)
+            }
+            print(i)
+        }
+    }
+    
+}
 
 
-#gene <- read.table("largedata/Dm/FGSv2_gene.bed3", header=F)
-#gene10 <- subset(gene, V1==10)
+df1$file <- gsub(".*/", "", df1$file)
+write.table(df1, "largedata/Dm/CG_lenlist.txt", sep="\t", row.names=FALSE, quote=FALSE, col.names=FALSE)
 
-res <- lapply(1:100, function(x){
-    tem <- gt[V1==gene$V1[x] & V2 >= gene$V2[x] & V2 <= gene$V3[x]]
-    tem$V3 <- apply(tem, 1, function(x) sum(x=="."))
-    test <- subset(tem, V3==0)
-    outfile <- paste0("largedata/Dm/", gene$V2[x], "-", gen$V3[x], ".txt")
-    write.table(test[, -3], "largedata/Dm/test_input.txt", sep="\t", 
-                row.names=FALSE, col.names=FALSE, quote=FALSE)
-    print(x)
-})
+# alpha_estimation.pl -dir gene_CG -output CG_res.txt -length_list CG_lenlist.txt
+# locus_name alpha_value mean_NB variance_NB
+
+
+
+
 
 
 
