@@ -24,9 +24,8 @@ set_farm_job(slurmsh = "slurm-script/run_alpha_chh.sh",
              email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemh", "1"))
 
 
-
 # Dm_methylation.pl -input gene_CG/AC148152.3_FG001_cg -output out_dm.txt -length 123 -alpha 0.327154136568751
-get_inputdf <- function(len_file="largedata/Dm/CG_lenlist.txt", 
+get_inputdf <- function(len_file="largedata/Dm/region_CG/region_CG_length.txt", 
                         alpha_file="largedata/Dm/CG_res.txt"){
     df1 <- read.table(len_file)
     alpha <- read.table(alpha_file)
@@ -37,12 +36,30 @@ get_inputdf <- function(len_file="largedata/Dm/CG_lenlist.txt",
     inputdf$out <- paste0(inputdf$locus_name, ".out")
     return(inputdf)
 }
-
-inputdf <- get_inputdf(len_file="largedata/Dm/CG_lenlist.txt", alpha_file="largedata/Dm/CG_res.txt")
+source("lib/run_dm_test.R")
+########
+inputdf <- get_inputdf(len_file="largedata/Dm/region_CG/region_CG_length.txt", 
+                       alpha_file="largedata/Dm/region_CG/region_CG_alpha.txt")
 run_dm_test(
-    inputdf, outdir="largedata/Dm/gene_CG", cmdno=100,
-    arrayshid = "slurm-script/run_dm_array.sh",
+    inputdf, outdir="largedata/Dm/region_CG/cg_input", cmdno=100,
+    arrayshid = "slurm-script/run_dm1_array.sh",
     email="yangjl0930@gmail.com", runinfo = c(TRUE, "med", 1)
 )
 
+######## CHG
+inputdf <- get_inputdf(len_file="largedata/Dm/region_CHG/region_CHG_length.txt", 
+                       alpha_file="largedata/Dm/region_CHG/region_CHG_alpha.txt")
+run_dm_test(
+    inputdf, outdir="largedata/Dm/region_CHG/chg_input", cmdno=100,
+    arrayshid = "slurm-script/run_dm2_array.sh",
+    email="yangjl0930@gmail.com", runinfo = c(TRUE, "med", 1)
+)
 
+#### CHH
+inputdf <- get_inputdf(len_file="largedata/Dm/region_CHH/region_CHH_length.txt", 
+                       alpha_file="largedata/Dm/region_CHH/region_CHH_alpha.txt")
+run_dm_test(
+    inputdf, outdir="largedata/Dm/region_CHH/chh_input", cmdno=100,
+    arrayshid = "slurm-script/run_dm3_array.sh",
+    email="yangjl0930@gmail.com", runinfo = c(TRUE, "med", 1)
+)

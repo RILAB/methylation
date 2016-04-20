@@ -52,7 +52,7 @@ set_dothetas <- function(vcf="test.vcf.gz", out="teo20_cg_fold", cpu=12, win=500
 cmd1 <- set_dothetas(vcf="teo20_cg_methratio.vcf.gz", out="teo20_cg_fold", cpu=8, win=50000, step=10000)
 set_farm_job(slurmsh = "slurm-script/run_angsd1.sh",
              shcode = cmd1, wd = NULL, jobid = "angsd1",
-             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemm", "8"))
+             email = "yangjl0930@gmail.com", runinfo = c(FALSE, "bigmemm", "8"))
 
 cmd2 <- set_dothetas(vcf="teo20_chg_methratio.vcf.gz", out="teo20_chg_fold", cpu=12, win=50000, step=10000)
 set_farm_job(slurmsh = "slurm-script/run_angsd2.sh",
