@@ -1,42 +1,41 @@
 ### Jinliang Yang
 ### April 13th, 2016
 
-library("data.table")
-gt <- fread("largedata/Dm/FGSv2_gene_GT_t.txt")
+library("farmeR")
+
+files <- list.files(path="largedata/Dm/gene_input", full.names=TRUE)
+inputdf <- data.frame(file=files, out="n")
+run_Rcodes(
+    inputdf, outdir="largedata/Dm/shfolder", cmdno=100,
+    rcodes = "$HOME/Documents/Github/methylation/profiling/2.Dm_tile/2.A.2_code_cformat_gene.R",
+    arrayshid = "slurm-script/run_cformat_gene.sh",
+    email="yangjl0930@gmail.com", runinfo = c(TRUE, "med", 1)
+)
 
 
-C_format <- function(minsite=10){
-    files <- list.files(path="largedata/Dm/input_gene", full.names=TRUE)
-    
-    df1 <- df2 <- df3 <- data.frame()
-    for(i in 1:length(files)){
-        onegene <- try(read.table(files[i], header=FALSE), silent = TRUE)
-        if (!inherits(onegene, 'try-error')){
-            onegene$miss <- apply(onegene, 1, function(x) sum(x=="."))
-            onegene <- subset(onegene, miss==0)
-            
-            #chg <- subset(onegene, V3 == "CHG")
-            #chh <- subset(onegene, V3 == "CHH")
-            
-            cg <- subset(onegene, V3 == "CG")
-            if(nrow(cg) > minsite){
-                outcg <- paste0(gsub("input_gene", "gene_CG", files[i]), "_cg")
-                write.table(cg[, c(1:2, 4:43)], outcg, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
-                tem1 <- data.frame(file=outcg, sites=nrow(cg))
-                df1 <- rbind(df1, tem1)
-            }
-            print(i)
-        }
-    }
-    
-}
+########### collect length file and rm *.len
+library(plyr)
+file1 <- list.files(path="largedata/Dm/gene_CG", pattern="len$", full.names=TRUE)
 
-
+df1 <- rbind.fill(lapply(file1, read.table, header=TRUE))
 df1$file <- gsub(".*/", "", df1$file)
-write.table(df1, "largedata/Dm/CG_lenlist.txt", sep="\t", row.names=FALSE, quote=FALSE, col.names=FALSE)
 
-# alpha_estimation.pl -dir gene_CG -output CG_res.txt -length_list CG_lenlist.txt
-# locus_name alpha_value mean_NB variance_NB
+#system("cd largedata/Dm/gene_CG/; mkdir cg_input; rm *out")
+system("cd largedata/Dm/gene_CG/; mkdir cg_input; rm *len; mv *_cg cg_input")
+write.table(df1, "largedata/Dm/gene_CG/gene_CG_length.txt", sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+
+file2 <- list.files(path="largedata/Dm/gene_CHG", pattern="len$", full.names=TRUE)
+df2 <- rbind.fill(lapply(file2, read.table, header=TRUE))
+df2$file <- gsub(".*/", "", df2$file)
+system("cd largedata/Dm/gene_CHG/; mkdir chg_input; rm *len; mv *_chg chg_input")
+write.table(df2, "largedata/Dm/gene_CHG/gene_CHG_length.txt", sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+
+
+file3 <- list.files(path="largedata/Dm/gene_CHH", pattern="len$", full.names=TRUE)
+df3 <- rbind.fill(lapply(file3, read.table, header=TRUE))
+df3$file <- gsub(".*/", "", df3$file)
+system("cd largedata/Dm/gene_CHH/; mkdir chh_input; rm *len; mv *_chh chh_input")
+write.table(df3, "largedata/Dm/gene_CHH/gene_CHH_length.txt", sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
 
 
 

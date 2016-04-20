@@ -1,14 +1,42 @@
 ### Jinliang Yang
 ### April 13th, 2016
 
-df1 <- read.table("largedata/Dm/CG_lenlist.txt")
-alpha <- read.table("largedata/Dm/CG_res.txt")
-names(alpha) <- c("locus_name", "alpha_value", "mean_NB", "variance_NB")
+# alpha_estimation.pl -dir region_CG -output region_CG_alpha.txt -length_list CG_lenlist.txt
+# locus_name alpha_value mean_NB variance_NB
 
-inputdf <- merge(alpha, df1, by.x="locus_name", by.y="V1")
+library(farmeR)
+sh1 <- "cd /home/jolyang/Documents/Github/methylation/largedata/Dm/gene_CG"
+sh2 <- "alpha_estimation.pl -dir cg_input -output gene_CG_alpha.txt -length_list gene_CG_length.txt"
+set_farm_job(slurmsh = "slurm-script/run_alpha4.sh",
+             shcode = c(sh1, sh2), wd = NULL, jobid = "alpha4",
+             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemh", "1"))
 
-names(inputdf)[5] <- "len"
-inputdf$out <- paste0(inputdf$locus_name, ".out")
+sh1 <- "cd /home/jolyang/Documents/Github/methylation/largedata/Dm/gene_CHG"
+sh2 <- "alpha_estimation.pl -dir chg_input -output gene_CHG_alpha.txt -length_list gene_CHG_length.txt"
+set_farm_job(slurmsh = "slurm-script/run_alpha5.sh",
+             shcode = c(sh1, sh2), wd = NULL, jobid = "alpha5",
+             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemh", "1"))
+
+sh1 <- "cd /home/jolyang/Documents/Github/methylation/largedata/Dm/gene_CHH"
+sh2 <- "alpha_estimation.pl -dir chh_input -output gene_CHH_alpha.txt -length_list gene_CHH_length.txt"
+set_farm_job(slurmsh = "slurm-script/run_alpha6.sh",
+             shcode = c(sh1, sh2), wd = NULL, jobid = "alpha6",
+             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemh", "1"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Dm_methylation.pl -input gene_CG/AC148152.3_FG001_cg -output out_dm.txt -length 123 -alpha 0.327154136568751
 run_dm_test(
