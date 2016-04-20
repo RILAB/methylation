@@ -5,13 +5,16 @@
 # %s/G/A/g | %s/C/A/g | %s/T/A/g
 # samtools faidx ZmB73_faked_v2.fasta 
 
+# bcftools filter teo20_methratio.bcf -i 'INFO/CO ~ "CG"' -r 1:1-1000 -o test_chr1_cg.vcf.gz -O z
+
+
 # bcftools convert teo20_methratio.bcf -r 10:1-10000 -o test_chr10.vcf.gz -O z
 # angsd -doSaf 1 -vcf-gl test_chr10.vcf.gz -anc ZmB73_faked_v2.fasta -fai ZmB73_faked_v2.fasta.fai -nind 20 -out out -fold 1
 
 # realSFS out.saf.idx -P 1 > out.sfs
 
 
-# angsd -vcf-gl test_chr10.vcf.gz -anc ZmB73_faked_v2.fasta -fai ZmB73_faked_v2.fasta.fai -nind 20 -out out -doSaf 1 -fold 1 -pest out.sfs -doThetas 1 
+# angsd -vcf-gl test_chr10.vcf.gz -anc ZmB73_RefGen_v2.fasta -fai ZmB73_RefGen_v2.fasta.fai -nind 20 -out out -doSaf 1 -fold 1 -pest out.sfs -doThetas 1 
 
 # thetaStat make_bed out.thetas.gz
 
