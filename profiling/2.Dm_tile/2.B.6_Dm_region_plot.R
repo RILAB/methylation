@@ -1,23 +1,17 @@
 ### Jinliang Yang
-### April 19th, 2016
-##
+### April 20th, 2016
 
-fgs <- read.table("largedata/Dm/FGSv2_gene.txt")
-names(fgs) <- c("chr", "start", "end", "geneid")
-
-
-##########
-df <- read.csv("cache/res_gene_cg.csv")
+df <- read.csv("cache/res_region_cg.csv")
 df$geneid <- gsub(".*/|_cg.out", "", df$geneid)
 
-res <- merge(fgs, df[, -1:-3], by="geneid")
+df$pos <- as.numeric(as.character(gsub(".*_", "", df$geneid)))
 
 
-pdf(file="graphs/tem2.pdf", height=4, width =10)
+pdf(file="graphs/tem.pdf", height=4, width =10)
 for(i in 1:10){
-    chr <- subset(res, chr==i)
-    chr <- chr[order(chr$start),]
-    plot(chr$start, chr$Dm, type="l", main=paste("Chr", i))
+    chr <- subset(df, chr==i)
+    chr <- chr[order(chr$pos),]
+    plot(chr$pos, chr$Dm, type="l", main=paste("Chr", i))
     abline(h = 0, lty=2, lwd=3, col="grey")
 }
 dev.off()
@@ -48,21 +42,14 @@ abline(h = 0, lty=2, lwd=3, col="grey")
 hist(df$Dm, breaks=100, col="darkblue")
 
 
+fgs <- read.table("largedata/Dm/FGSv2_gene.txt")
+names(fgs) <- c("chr", "start", "end", "geneid")
+
+res <- merge(fgs, df[, -1:-3], by="geneid")
+
 
 chr <- subset(res, chr==10)
 chr <- chr[order(chr$chr, chr$start),]
 plot(chr$start, chr$Dm, type="l")
 abline(h = 0, lty=2, lwd=3, col="grey")
-
-
-library(ggplot2)
-# Plot Tajima's D
-data$TajimasD <- as.numeric(as.character(data$TajimasD))
-head(data$TajimasD)
-tiff(filename = paste(fileBase, "_TajimasD.tiff", sep = "")) 
-ggplot(chr, aes(x=Dm)) + 
-    geom_histogram() + 
-    ggtitle("Tajima's D Distribution")
-dev.off()
-
 

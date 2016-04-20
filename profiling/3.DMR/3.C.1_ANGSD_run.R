@@ -37,7 +37,7 @@ set_dothetas <- function(vcf="test.vcf.gz", out="teo20_cg_fold", cpu=12, win=500
     sh2 <- paste0("realSFS ", out, ".saf.idx -P ", cpu, " > ", out, ".sfs")
     # angsd -vcf-gl test_chr10.vcf.gz -anc ZmB73_faked_v2.fasta -fai ZmB73_faked_v2.fasta.fai 
     # -nind 20 -out out -doSaf 1 -fold 1 -pest out.sfs -doThetas 1
-    sh3 <- paste0("angsd -vcf-gl ", vcf, " -anc ZmB73_RefGen_v2.fasta -fai ZmB73_RefGen_v2.fasta.fai",
+    sh3 <- paste0("angsd -vcf-gl ", vcf, " -anc ZmB73_RefGen_v2.fasta -fai ZmB73_RefGen_v2.fasta.fai ",
                   "-nind 20 -out ", out, " -doSaf 1 -fold 1 -pest ", out, ".sfs", " -doThetas 1")
     
     # thetaStat make_bed out.thetas.gz
@@ -53,13 +53,15 @@ cmd1 <- set_dothetas(vcf="teo20_cg_methratio.vcf.gz", out="teo20_cg_fold", cpu=8
 set_farm_job(slurmsh = "slurm-script/run_angsd1.sh",
              shcode = cmd1, wd = NULL, jobid = "angsd1",
              email = "yangjl0930@gmail.com", runinfo = c(FALSE, "bigmemm", "8"))
+###>>> In this path: cd /home/jolyang/Documents/Github/methylation
+###>>> RUN: sbatch -p bigmemm --mem 65568 --ntasks=8 slurm-script/run_angsd1.sh
 
 cmd2 <- set_dothetas(vcf="teo20_chg_methratio.vcf.gz", out="teo20_chg_fold", cpu=12, win=50000, step=10000)
 set_farm_job(slurmsh = "slurm-script/run_angsd2.sh",
              shcode = cmd2, wd = NULL, jobid = "angsd2",
-             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemm", "8"))
+             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "med", "16"))
 
 cmd3 <- set_dothetas(vcf="teo20_chh_methratio.vcf.gz", out="teo20_chh_fold", cpu=12, win=50000, step=10000)
 set_farm_job(slurmsh = "slurm-script/run_angsd3.sh",
              shcode = cmd3, wd = NULL, jobid = "angsd3",
-             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemm", "8"))
+             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "med", "16"))
