@@ -14,7 +14,7 @@ gene$attribute <- gsub(";.*", "", gene$attribute)
 gene <- subset(gene, seqname %in% 1:10)
 #39423
 
-bed3 <- gene[, c("seqname", "start", "end")]
+bed3 <- gene[, c("seqname", "start", "end", "attribute")]
 bed3$seqname <- as.character(bed3$seqname)
 bed3 <- bed3[order(bed3$seqname, bed3$start),] #39423     3
 write.table(bed3, "largedata/Dm/FGSv2_gene.txt", row.names=FALSE, col.names=FALSE, quote=FALSE, sep="\t")
