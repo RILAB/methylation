@@ -1,5 +1,6 @@
 ### Jinliang Yang
 ### April 20th, 2016
+### udpate codes
 
 # extract ratio of CG, CHG, and CHH
 # bcftools filter teo20_methratio.bcf -i 'INFO/CO ~ "CG"' -r 1:1-1000 -o test_chr1_cg.vcf.gz -O z
