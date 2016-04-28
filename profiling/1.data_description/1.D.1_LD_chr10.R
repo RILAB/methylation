@@ -9,3 +9,6 @@
 "plink -vcf teo20_cg_methratio.vcf.gz --r2 --threads 8 --memory 64000 --out teo20_cg --allow-extra-chr"
 
 
+
+
+
