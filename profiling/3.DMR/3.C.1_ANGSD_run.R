@@ -1,5 +1,6 @@
 ### Jinliang Yang
 ### April 20th, 2016
+### udpate codes
 
 # extract ratio of CG, CHG, and CHH
 # bcftools filter teo20_methratio.bcf -i 'INFO/CO ~ "CG"' -r 1:1-1000 -o test_chr1_cg.vcf.gz -O z
@@ -56,12 +57,16 @@ set_farm_job(slurmsh = "slurm-script/run_angsd1.sh",
 ###>>> In this path: cd /home/jolyang/Documents/Github/methylation
 ###>>> RUN: sbatch -p bigmemm --mem 65568 --ntasks=8 slurm-script/run_angsd1.sh
 
-cmd2 <- set_dothetas(vcf="teo20_chg_methratio.vcf.gz", out="teo20_chg_fold", cpu=12, win=50000, step=10000)
+cmd2 <- set_dothetas(vcf="teo20_chg_methratio.vcf.gz", out="teo20_chg_fold", cpu=16, win=50000, step=10000)
 set_farm_job(slurmsh = "slurm-script/run_angsd2.sh",
              shcode = cmd2, wd = NULL, jobid = "angsd2",
-             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "med", "16"))
+             email = "yangjl0930@gmail.com", runinfo = c(FALSE, "med", "16"))
+###>>> In this path: cd /home/jolyang/Documents/Github/methylation
+###>>> RUN: sbatch -p med --mem 41600 --ntasks=16 slurm-script/run_angsd2.sh
 
-cmd3 <- set_dothetas(vcf="teo20_chh_methratio.vcf.gz", out="teo20_chh_fold", cpu=12, win=50000, step=10000)
+cmd3 <- set_dothetas(vcf="teo20_chh_methratio.vcf.gz", out="teo20_chh_fold", cpu=16, win=50000, step=10000)
 set_farm_job(slurmsh = "slurm-script/run_angsd3.sh",
              shcode = cmd3, wd = NULL, jobid = "angsd3",
-             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "med", "16"))
+             email = "yangjl0930@gmail.com", runinfo = c(FALSE, "med", "18"))
+###>>> In this path: cd /home/jolyang/Documents/Github/methylation
+###>>> RUN: sbatch -p med --mem 41600 --ntasks=16 slurm-script/run_angsd3.sh
