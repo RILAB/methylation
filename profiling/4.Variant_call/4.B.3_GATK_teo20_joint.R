@@ -1,8 +1,12 @@
+### Jinliang Yang
+### May 2nd, 2016
 
-
+library("farmeR")
 ####### joint variant calling
-gvcf <- list.files(path="~/dbcenter/BMfastq/bam", pattern="g.vcf$", full.names = TRUE)
-outvcf <- "~/dbcenter/BMfastq/bam/joint_call.vcf"
+gvcf <- list.files(path="largedata/gatk_vcf", pattern="g.vcf$", full.names = TRUE)
+gvcf <- gvcf[1]
+outvcf <- "largedata/gatk_vcf/JRIAL1A_joint_call.vcf"
+
 run_GATK_JointGenotype(
     gvcf, outvcf,
     ref.fa="$HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa",
@@ -12,7 +16,7 @@ run_GATK_JointGenotype(
     snpflt="\"QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0\"",
     indelflt="\"QD < 2.0 || FS > 200.0 || ReadPosRankSum < -20.0\"",
     email="yangjl0930@gmail.com",
-    runinfo = c(TRUE, "bigmemh", 4)
+    runinfo = c(TRUE, "bigmemh", 8)
 )
 
 #WARN  23:53:16,436 Interpreter - ![38,47]: 'QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0;' undefined variable MQRankSum 
