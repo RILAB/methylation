@@ -23,4 +23,11 @@ run_GATK_JointGenotype(
 #WARN  23:55:50,098 Interpreter - ![26,40]: 'QD < 2.0 || FS > 200.0 || ReadPosRankSum < -20.0;' undefined variable ReadPosRankSum 
 
 
-
+source("lib/run_pseudoref.R")
+library(farmeR)
+inputdf <- data.frame(input.vcf="largedata/gatk_vcf/JRIAL1A_joint_call.filtered_snps.vcf",
+                      out.fa="largedata/pgenome/mysample.fa")
+run_pseudoref(inputdf,
+              ref.fa="$HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa",
+              gatkpwd="$HOME/bin/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar",
+              email="yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemh", 8))

@@ -8,6 +8,12 @@ b[context == "CG" & strand == "+", mean(eff_CT_count, na.rm=TRUE)]
 b[context == "CHG" & strand == "+", mean(eff_CT_count, na.rm=TRUE)] 
 b[context == "CHH" & strand == "+", mean(eff_CT_count, na.rm=TRUE)] 
 
+library("data.table")
+b <- fread("/group/jrigrp4/B73_tissue_WGBS/B73_anther/B73_anther.wgbs.clipOverlap_BSMAP_out.txt", nrows = 1000000)
+
+b[context == "CG" & strand == "+", mean(eff_CT_count, na.rm=TRUE)] 
+b[context == "CHG" & strand == "+", mean(eff_CT_count, na.rm=TRUE)] 
+b[context == "CHH" & strand == "+", mean(eff_CT_count, na.rm=TRUE)] 
 
 #chr	start	end		
 #CT_B73_all3_CG	C_B73_all3_CG	Cratio_B73_all3_CG
