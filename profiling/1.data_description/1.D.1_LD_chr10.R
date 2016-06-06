@@ -4,6 +4,7 @@
 
 
 library("data.table")
+
 chr10 <- fread("largedata/vcf_files/teo20_RA_chr10.txt") #65202272
 chr10 <- as.data.frame(chr10)
 
@@ -14,7 +15,11 @@ sub <- chr10[idx, ]
 cmd1 <- "bcftools index teo20_cg_methratio.vcf.gz"
 cmd2 <- "bcftools filter teo20_cg_methratio.vcf.gz - r 10 -o teo20_cg_mr_chr10.vcf.gz -O z"
 
-
+library("farmeR")
+sh1 <- "sh data/iget.sh"
+set_farm_job(slurmsh = "slurm-script/run_fq.sh",
+             shcode = sh1, wd = NULL, jobid = "fastq",
+             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemh", "1"))
 
 library(farmeR)
 
