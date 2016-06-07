@@ -1,5 +1,5 @@
 
-#confluent hypergeometric
+#confluent hypergeometric function 2
 f1<-function(a,b,z){ return(log(hyperg_1F1(a,b,z))) }
 
 #prochhammer symbol
