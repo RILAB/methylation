@@ -29,9 +29,10 @@ run_GATK(inputdf,
          realignInDels=FALSE, indels.vcf="indels.vcf",
          recalBases=FALSE, dbsnp.vcf="dbsnp.vcf", 
          email="yangjl0930@gmail.com",
-         runinfo = c(TRUE, "bigmemm", 16))
+         runinfo = c(TRUE, "bigmemm", 32))
 
 
+############
 
 
 
