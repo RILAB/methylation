@@ -3,7 +3,7 @@
 #SBATCH -o /home/jolyang/Documents/Github/methylation/slurm-log/testout-%j.txt
 #SBATCH -e /home/jolyang/Documents/Github/methylation/slurm-log/err-%j.txt
 #SBATCH -J gatk
-#SBATCH --array=1-9
+#SBATCH --array=1-2
 #SBATCH --mail-user=yangjl0930@gmail.com
 #SBATCH --mail-type=END
 #SBATCH --mail-type=FAIL #email if fails
