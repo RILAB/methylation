@@ -14,10 +14,11 @@ run_pseudoref(inputdf,
 
 
 ### run bsmap
-inputdf <- data.frame(fq1="/group/jrigrp4/BS_teo20/fastq/SRR2921970.sra_1.fastq.gz",
-                      fq2="/group/jrigrp4/BS_teo20/fastq/SRR2921970.sra_2.fastq.gz",
-                      out="$HOME/dbcenter/Ecoli/fastq/SRR2921970")
+library(farmeR)
+inputdf <- data.frame(fq1="/group/jrigrp4/BS_teo20/fastq/JRA1_CTTGTA_R1.fastq.gz",
+                      fq2="/group/jrigrp4/BS_teo20/fastq/JRA1_CTTGTA_R2.fastq.gz",
+                      out="$HOME/Documents/Github/methylation/largedata/bsmap/JRA1")
 
-runa_bsmap(inputdf, ref.fa="~/dbcenter/Ecoli/reference/Ecoli_k12_MG1655.fasta",
+runa_bsmap(inputdf, ref.fa="$HOME/Documents/Github/methylation/largedata/pgenome/mysample.fa",
            picardpwd="$HOME/bin/picard-tools-2.1.1/picard.jar",
-           email=NULL, runinfo = c(FALSE, "bigmemh", 1))
+           email="yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemm", 8))
