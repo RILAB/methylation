@@ -43,7 +43,8 @@ like<-function(conditional, k, Ne, mu, nu, s, my_sfs){
 }
 
 
-MCMCBC <- function(my_sfs, sites, ngen=100000, conditional=FALSE, k=0:40, Ne=150000, verbose=TRUE){
+MCMCBC <- function(my_sfs, sites, ngen, rates,sd,
+                   conditional=FALSE, k, Ne, verbose=TRUE){
     ## Fix some stuff for our model
     
     #conditional=FALSE #use only conditional likelihood
@@ -55,10 +56,10 @@ MCMCBC <- function(my_sfs, sites, ngen=100000, conditional=FALSE, k=0:40, Ne=150
     mu.samples=rep(NA, ngen/sample.freq) # Initialize a posterior vector for each param 
     nu.samples = rep(NA, ngen/sample.freq)  #
     s.samples = rep(NA, ngen/sample.freq)  #
+    acceptances = vector("list", ngen) #
     
-    rates=c(1E6,1E6,1E5) # rates for mu, nu, s (in that order)
-    sd=c(1E-6,1E-6,1E-5) # sd for proposal dist for mu, nu, s (in that order)
-    
+    #rates=c(1E6,1E6,1E5) # rates for mu, nu, s (in that order)
+    #sd=c(1E-6,1E-6,1E-5) # sd for proposal dist for mu, nu, s (in that order)
     
     ### Initial values
     params <- rexp(3,rates) # initial values of mu,nu,s (in that order)
@@ -87,7 +88,10 @@ MCMCBC <- function(my_sfs, sites, ngen=100000, conditional=FALSE, k=0:40, Ne=150
         
         # If r < R, accept the proposed parameters.
         r = runif(1)
+        acceptances[[i]] <- c(NA, NA, NA)
+        acceptances[[i]][random.param]=0
         if(r < R){ 
+            acceptances[[i]][random.param]=1
             params[random.param] = params.prime[random.param] # Set the current value to the proposed value.
             l = l.prime # Set current likelihood to  proposed likelihood.
             priors = priors.prime # Set current prior probability to  proposed prior probability.
@@ -114,20 +118,36 @@ MCMCBC <- function(my_sfs, sites, ngen=100000, conditional=FALSE, k=0:40, Ne=150
     post.s=s.samples[-c(1:(0.1*ngen/sample.freq))]
     
     ### posterior SFS
+    n <- max(k)
     post_sfs <- sapply(k,function(K){
-        log(choose(n,K))
-        + (f1(mean(post.nu)*4*Ne+K, mean(post.mu)*4*Ne+mean(post.nu)*4*Ne+n,mean(post.s)*4*Ne) 
-           + proch(mean(post.nu)*4*Ne,K)
-           + proch(mean(post.mu)*4*Ne,n-K))
-        - (f1(mean(post.nu)*4*Ne,mean(post.mu)*4*Ne+mean(post.nu)*4*Ne,mean(post.s)*4*Ne) 
-           + proch(mean(post.mu)*4*Ne+mean(post.nu)*4*Ne,n))})
+        log(choose(n,K)) +
+        (f1(mean(post.nu)*4*Ne+K, mean(post.mu)*4*Ne+mean(post.nu)*4*Ne+n,mean(post.s)*4*Ne) + 
+        proch(mean(post.nu)*4*Ne,K) + proch(mean(post.mu)*4*Ne,n-K)) -
+        (f1(mean(post.nu)*4*Ne,mean(post.mu)*4*Ne+mean(post.nu)*4*Ne,mean(post.s)*4*Ne) +
+        proch(mean(post.mu)*4*Ne+mean(post.nu)*4*Ne,n))})
     post_sfs <- post_sfs-max(post_sfs)
     post_sfs <- exp(post_sfs)/sum(exp(post_sfs))*sites
 
-    return(list(prior.mu=prior.mu, post.mu=post.mu, prior.nu=prior.nu, post.nu=post.nu, 
+    return(list(acceptances=acceptances,
+                prior.mu=prior.mu, post.mu=post.mu, prior.nu=prior.nu, post.nu=post.nu, 
                 prior.s=prior.s, post.s=post.s,
                 s.samples=s.samples, nu.samples=nu.samples, mu.samples=mu.samples,
                 my_sfs=my_sfs, post_sfs=post_sfs))
     
 }
+
+
+accept_rate <- function(res){
+
+    tem <- do.call(rbind.data.frame, res[[1]])
+    names(tem) <- c("mu", "nu", "s")
+    rs <- apply(tem, 2, function(x) {
+        y <- x[!is.na(x)]
+        return(round(sum(y)/length(y),5))
+    })
+    message(sprintf("acceptance rate for mu [ %s ], nu [ %s ] and s [ %s ]", rs[1],rs[2], rs[3] ))
+    return(tem)
+}
+
+
 
