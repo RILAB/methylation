@@ -50,7 +50,7 @@ ob <- load("cache/res_k40.RData")
 mplot(res)
 
 ### plot obs and post SFS
-sfsplot(res, k=0:20)
+sfsplot(res, k=0:40)
 
 
 
