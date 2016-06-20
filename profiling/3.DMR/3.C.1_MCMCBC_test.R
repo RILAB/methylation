@@ -1,6 +1,7 @@
 ### Jinliang Yang
 ### from Jeff's http://rpubs.com/rossibarra/179515
 
+
 ############################
 source("lib/mplots.R")
 source("lib/mcmcbc.R")
@@ -13,29 +14,41 @@ Ne=150000
 ### Fake Data
 #assuming sample size 20 chromosomes (10 diploid dudes) with 10K SNPs
 snps=10000 # only variant sites, used for conditional model only
-sites=100000 # total number of variant and invariant sites, used for complete model (conditional==FALSE) only
+sites=100000 # total number of variant and invariant sites, 
+#used for complete model (conditional==FALSE) only
 k=0:40
 n=max(k)
+conditional <- FALSE
+
+#neutral
+#my_sfs=(rmultinom(1,theta,(theta/1:(length(k)-2)))) 
 fake.alpha=rexp(1,rates[1])*4*Ne
 fake.beta=rexp(1,rates[2])*4*Ne
 fake.gamma=rexp(1,rates[3])*4*Ne
 
 
-#neutral
-#my_sfs=(rmultinom(1,theta,(theta/1:(length(k)-2)))) 
+#Some params of interest for Jinliang's plots
+fake.alpha= 0.2553559
+fake.beta = 0.1380958
+fake.gamma = 0.01
 
 my_sfs <- sapply(k,function(K){
-    log(choose(n,K))+(f1(fake.beta+K,fake.alpha+fake.beta+n,fake.gamma)+proch(fake.beta,K)+proch(fake.alpha,n-K))-(f1(fake.beta,fake.alpha+fake.beta,fake.gamma)+proch(fake.alpha+fake.beta,n))
+    log(choose(n,K))+(f1(fake.beta+K,fake.alpha+fake.beta+n,fake.gamma)+
+                          proch(fake.beta,K)+proch(fake.alpha,n-K))-
+        (f1(fake.beta,fake.alpha+fake.beta,fake.gamma)+proch(fake.alpha+fake.beta,n))
 })
 my_sfs=my_sfs-max(my_sfs)
 my_sfs=exp(my_sfs)/sum(exp(my_sfs))
 
 if(conditional==TRUE){
-    c_csfs <- sapply(1:length(my_sfs), function(x) my_sfs[x]/sum(my_sfs[2:(length(my_sfs)-1)]))  #divide by 
+    c_csfs <- sapply(1:length(my_sfs), function(x) my_sfs[x]/sum(my_sfs[2:(length(my_sfs)-1)]))  
+    #divide by 
     my_sfs <- round(c_csfs[-c(1,length(c_csfs))]*snps)
 } else{
     my_sfs <- round(my_sfs*sites)
 }
+
+plot(my_sfs~(c(0:max(k))),pch=19,cex=2,ylab="counts",xlab="number of chromosomes",cex.lab=1.5)
 
 
 ##########
@@ -51,7 +64,5 @@ mplot(res)
 
 ### plot obs and post SFS
 sfsplot(res, k=0:40)
-
-
 
 ######
