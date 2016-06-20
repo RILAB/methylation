@@ -47,7 +47,8 @@ sfsplot <- function(res, k=0:40){
     my_sfs <- res$my_sfs
     post_sfs <- res$post_sfs
     
+    par(mfrow=c(1,1))
     plot(my_sfs ~ k, pch=19, cex=2, ylab="counts", xlab="number of chromosomes", cex.lab=1.5)
-    points(post_sfs ~ k,cex=1, col=cbPalette[2], pch=19)
+    points(post_sfs ~ k, cex=1, col=cbPalette[2], pch=19)
     legend("top",legend=c("observed","mean of posterior"), fill=c("black",cbPalette[2]))
 }

@@ -1,9 +1,20 @@
 ### Jinliang Yang
 ### from Jeff's http://rpubs.com/rossibarra/179515
 
+<<<<<<< HEAD
 source("lib/mplots.R")
 source("lib/mcmcbc.R")
 
+=======
+############################
+source("lib/mplots.R")
+source("lib/mcmcbc.R")
+
+conditional=FALSE
+rates=c(1E6,1E6,1E5) # rates for mu, nu, s (in that order)
+#sd=c(1E-6,1E-6,1E-5) # sd for proposal dist for mu, nu, s (in that order)
+Ne=150000
+>>>>>>> be470116897c469038898fc1596dbc7aaabb7e28
 
 ### Fake Data
 #assuming sample size 20 chromosomes (10 diploid dudes) with 10K SNPs
@@ -20,10 +31,16 @@ fake.alpha=rexp(1,rates[1])*4*Ne
 fake.beta=rexp(1,rates[2])*4*Ne
 fake.gamma=rexp(1,rates[3])*4*Ne
 
+<<<<<<< HEAD
 #Some params of interest for Jinliang's plots
 fake.alpha= 0.2553559
 fake.beta = 0.1380958
 fake.gamma = 0.01
+=======
+
+#neutral
+#my_sfs=(rmultinom(1,theta,(theta/1:(length(k)-2)))) 
+>>>>>>> be470116897c469038898fc1596dbc7aaabb7e28
 
 my_sfs <- sapply(k,function(K){
     log(choose(n,K))+(f1(fake.beta+K,fake.alpha+fake.beta+n,fake.gamma)+
@@ -43,13 +60,28 @@ if(conditional==TRUE){
 
 plot(my_sfs~(c(0:max(k))),pch=19,cex=2,ylab="counts",xlab="number of chromosomes",cex.lab=1.5)
 
+<<<<<<< HEAD
 res <- MCMCBC(my_sfs, ngen=100000, conditional=FALSE, k=0:40, Ne=150000, verbose=TRUE)
     
 ##Acceptances. Use to evaluate sd=c(1E-6,1E-6,1E-5).
 #If acceptance too high, increase these values to explore wider space. 
 #If acceptance too low, decrease.
+=======
+##########
+res <- MCMCBC(my_sfs, sites, ngen=1000000, rates=c(1E6,1E6,1E5), sd=c(1E-5,1E-5,1E-6),
+              conditional=FALSE, k, Ne, verbose=TRUE)
+tab <- accept_rate(res)
+    
+save(list="res", file="cache/res_k40.RData")
+### plot trace and posteriors
 
-s.samples
+ob <- load("cache/res_k40.RData")
+mplot(res)
+
+### plot obs and post SFS
+sfsplot(res, k=0:20)
+>>>>>>> be470116897c469038898fc1596dbc7aaabb7e28
+
 
 
 ######
