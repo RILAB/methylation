@@ -1,10 +1,10 @@
 ### http://rpubs.com/rossibarra/mcmcbc
 ### By JRI
+### http://rpubs.com/rossibarra/179515
 
 library(gsl) #Gnu scientific Library is a collection of numerical routines for scientific computing.
 library(coda) #Output Analysis and Diagnostics for MCMC
 library(utils)
-
 
 #confluent hypergeometric function 2
 f1 <- function(a,b,z){ return(log(hyperg_1F1(a,b,z))) }
@@ -81,7 +81,7 @@ MCMCBC <- function(my_sfs, sites, ngen, rates,sd,
         l.prime = like(conditional,k,Ne,params.prime[1],params.prime[2],params.prime[3],my_sfs) 
         
         # Calculate the proposed prior probability.
-        priors.prime=dexp(params.prime,c(1E6,1E6,5E4))  
+        priors.prime=dexp(params.prime,rates)  
         
         # Calculate the acceptance probability.
         R = (l.prime/l)*(priors.prime[random.param]/priors[random.param]) 

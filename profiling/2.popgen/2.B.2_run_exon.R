@@ -17,7 +17,7 @@ dev.off()
 # 3  sd=c(1E-5,1E-5,1E-4)
 # 4  sd=c(1E-4,1E-4,1E-5)
 # 5  sd=c(1E-3,1E-3,1E-4)
-res <- MCMCBC(my_sfs=sfs$Freq, sites=649360, ngen=1000000, rates=c(1E6,1E6,1E5), sd=c(1E-3,1E-3,1E-4),
+res <- MCMCBC(my_sfs=sfs$Freq, sites=649360, ngen=100000, rates=c(1E6,1E6,1E5), sd=c(1E-3,1E-3,1E-4),
               conditional=FALSE, k=0:40, Ne=150000, verbose=TRUE)
 tab <- accept_rate(res)
 
@@ -25,7 +25,7 @@ tab <- accept_rate(res)
 save(list="res", file="largedata/res_k40_exon5.RData")
 ### plot trace and posteriors
 
-ob <- load("largedata/res_k40_exon2.RData")
+ob <- load("largedata/res_k40_exon5.RData")
 mplot(res)
 
 ### plot obs and post SFS
