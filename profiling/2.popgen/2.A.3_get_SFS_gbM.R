@@ -3,27 +3,20 @@
 ### purpose: get SFS for features
 
 library(GenomicFeatures)
-gff_file <- system.file("extdata", "GFF3_files", "a.gff3", package="GenomicFeatures")
-txdb <- makeTxDbFromGFF(gff_file, format="gff3")
-txdb
-exonsBy(txdb, by="gene")
+library("data.table")
+
+res <- read.csv("cache/stat_exon_mean_var.csv")
+RAdata <- fread("largedata/vcf_files/teo20_RA_exon.txt")
 
 
-### Set some values 
-
-
-library("data.table", lib="~/bin/Rlib")
-
-
-getsfs <- function(context="CG", cols=3:22, BINSIZE=100, gbM){
+getsfs <- function(RAdata, context="CG", cols=3:22, BINSIZE=100, geneids=subset(res, mm <= 0.6)$geneid){
     
     ### features
-    gene <- get_gene()
-    subgen <- subset(gene, attribute %in% gbM$geneid)
+    gene <- get_feature(gff="~/dbcenter/AGP/AGPv2/ZmB73_5b_FGS.gff", features="gene")
+    subgen <- subset(gene, attribute %in% geneids)
     gr0 = with(subgen, GRanges(seqnames=seqname, IRanges(start=start, end=end), strand=strand, geneid=attribute ))
     
     ### methylation
-    exon <- fread("largedata/vcf_files/teo20_RA_exon.txt")
     cg <- exon[ V2 == context] #9270420      22
     cg$chr <- gsub("_.*", "", cg$V1)
     cg$pos <- as.numeric(as.character(gsub(".*_", "", cg$V1)))
@@ -39,8 +32,8 @@ getsfs <- function(context="CG", cols=3:22, BINSIZE=100, gbM){
     #gr2 <- as.data.frame(gr1)
     #gr2 <- as.data.table(gr2)
     
-    subcg <- as.data.frame(subcg)
     subcg[subcg=="."] <- "NA"
+    subcg <- as.data.frame(subcg)
     subcg[, cols] <- apply(subcg[, cols], 2, as.numeric)
     
     
@@ -65,24 +58,26 @@ getcount <- function(x, mmin=0.3, mmax=0.7){
     return(2*n2+n1)
 }
 
-get_gene <- function(){
-    library(GenomicFeatures)    
-    gff <- read.table("~/dbcenter/AGP/AGPv2/ZmB73_5b_FGS.gff")
+###
+get_feature <- function(gff="~/dbcenter/AGP/AGPv2/ZmB73_5b_FGS.gff", features="gene"){
+    gff <- fread(gff)
+    gff <- as.data.frame(gff)
     names(gff) <- c("seqname", "source", "feature", "start", "end", "score",
                     "strand", "frame", "attribute")
     
-    gene <- subset(gff, feature=="gene")
-    gene$attribute <- gsub("ID=", "", gene$attribute)
-    gene$attribute <- gsub(";.*", "", gene$attribute)
-    gene <- subset(gene, seqname %in% 1:10)
+    fe <- subset(gff, feature %in% features)
+    fe$attribute <- gsub("ID=", "", fe$attribute)
+    fe$attribute <- gsub(";.*", "", fe$attribute)
+    fe <- subset(fe, seqname %in% 1:10)
     
-    gene$strand <- as.character(gene$strand)
-    return(gene)
+    fe$strand <- as.character(fe$strand)
+    return(fe)
 }
 
 sfs <- getsfs(context="CHG", cols=3:22, BINSIZE=100)
 write.table(sfs, "cache/sfs_test.csv", sep=",", row.names=FALSE, quote=FALSE)
 
 write.table(sfs, "cache/sfs_gbM_98k.csv", sep=",", row.names=FALSE, quote=FALSE)
+write.table(sfs, "cache/sfs_ngbM_550k.csv", sep=",", row.names=FALSE, quote=FALSE)
 
 

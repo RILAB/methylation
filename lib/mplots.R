@@ -97,6 +97,7 @@ mplot <- function(res, burnin=0.25, rates=c(1E7,1E8,1E6)){
     if(fake==TRUE){ splotzoom=splotzoom+geom_vline(xintercept = fake.gamma/(4*Ne))}  else{ splotzoom=splotzoom+geom_vline(xintercept = mode.s) }
     
     #PLOT
+    message(sprintf("posterior mu [ %s ], nu [ %s ] and s [ %s ]", mode.mu, mode.nu, mode.s))
     plot_grid(mtrace,ntrace,strace,muplot,nuplot,splot,muplotzoom,nuplotzoom,splotzoom,
               ncol=3,rel_heights=c(1.5,1,1), align="v")
     #return(ltrace)
