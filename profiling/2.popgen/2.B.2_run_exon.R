@@ -17,7 +17,7 @@ dev.off()
 # 3  sd=c(1E-5,1E-5,1E-4)
 # 4  sd=c(1E-4,1E-4,1E-5)
 # 5  sd=c(1E-3,1E-3,1E-4)
-res <- MCMCBC(my_sfs=sfs$Freq, rates=c(1E7,1E8,1E6), sd=c(0.05,0.05,0.05), k=0:40,
+res <- MCMCBC(my_sfs=sfs$Freq, rates=c(1E8,1E8,1E8), sd=c(0.05,0.05,0.05), k=0:40,
               conditional=FALSE, Ne=150000, ngen=100000, verbose=TRUE)
 
 
@@ -26,8 +26,11 @@ save(list="res", file="largedata/res_k40_exon5.RData")
 ### plot trace and posteriors
 
 ob <- load("largedata/res_k40_exon5.RData")
-mplot(res, burnin=0.25, rates=c(1E7,1E8,1E6))
+mplot(res, burnin=0.2, rates=c(1E8,1E8,1E8))
 plot(ltrace)
+
+
+
 
 ### plot obs and post SFS
 sfsplot(res, k=0:40)
