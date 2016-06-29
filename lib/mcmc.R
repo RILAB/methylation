@@ -59,7 +59,7 @@ like<-function(conditional,k,Ne,mu,nu,s,my_sfs){
 
 conditional=FALSE #use only conditional likelihood
 Ne=150000 #replace with estimated Ne from SNP data
-ngen = 100000 # Set the number of generations.
+ngen = 10000 # Set the number of generations.
 sample.freq = 100 # Set the sample frequency.
 l.samples = rep(NA,ngen/sample.freq) # Initialize a likelihood vector with length equal to the number of samples.
 p.samples = vector("list", ngen/sample.freq)  # Initialize a prior list with length equal to the number of samples.
@@ -105,6 +105,7 @@ if(fake==TRUE){
     my_sfs=sfs_data$Freq
 }
 k=0:(length(my_sfs)-1)
+n=max(k)
 plot(my_sfs~k,pch=19,cex=2,ylab="counts",xlab="number of chromosomes",cex.lab=1.5)
 
 
@@ -165,7 +166,7 @@ for(i in 1:ngen){ # For each generation...
         s.samples[i/sample.freq] = params[3]
         l.samples[i/sample.freq] = l # Save the current likelihood value.
         p.samples[[i/sample.freq]] = priors # Save the current prior value.
-        if(verbose) setTxtProgressBar(textbar,(i/ngen)) # Progress bar.
+        setTxtProgressBar(textbar,(i/ngen)) # Progress bar.
     }
 }
 
@@ -218,13 +219,13 @@ muplot<-ggplot(data.frame(post.mu,prior.mu)) +
     geom_histogram(aes(prior.mu),bins=30,alpha=0.2,fill=cbPalette[1])+
     scale_x_log10()+
     xlab(expression(mu))
-if(fake==TRUE){ muplot=muplot+geom_vline(xintercept = fake.alpha/(4*Ne))} else{ muplot=muplot+geom_vline(xintercept = mean.mu) }
+if(fake==TRUE){ muplot=muplot+geom_vline(xintercept = fake.alpha/(4*Ne))} else{ muplot=muplot+geom_vline(xintercept = mean(mu.samples)) }
 
 muplotzoom<-ggplot(data.frame(post.mu)) +
     geom_histogram(aes(post.mu),fill=cbPalette[2],bins=30)+
     xlab(expression(mu))+  
     theme(axis.text=element_text(size=6))
-if(fake==TRUE){ muplotzoom=muplotzoom+geom_vline(xintercept = fake.alpha/(4*Ne))} else{ muplotzoom=muplotzoom+geom_vline(xintercept = mean.mu) }
+if(fake==TRUE){ muplotzoom=muplotzoom+geom_vline(xintercept = fake.alpha/(4*Ne))} else{ muplotzoom=muplotzoom+geom_vline(xintercept = mean(mu.samples)) }
 
 #BETA
 prior.nu=rexp(length(nu.samples),rates[2])
@@ -236,13 +237,13 @@ nuplot<-ggplot(data.frame(post.nu,prior.nu)) +
     scale_x_log10()+
     xlab(expression(nu))
 if(fake==TRUE){ nuplot=nuplot+geom_vline(xintercept = fake.beta/(4*Ne))} else{ 
-    nuplot=nuplot+geom_vline(xintercept = mean.nu) }
+    nuplot=nuplot+geom_vline(xintercept = mean(nu.samples)) }
 
 nuplotzoom<-ggplot(data.frame(post.nu)) +
     geom_histogram(aes(post.nu),fill=cbPalette[3],bins=30)+
     xlab(expression(nu))+ 
     theme(axis.text=element_text(size=6))
-if(fake==TRUE){ nuplotzoom=nuplotzoom+geom_vline(xintercept = fake.beta/(4*Ne))} else{ nuplotzoom=nuplotzoom+geom_vline(xintercept = mean.nu) }
+if(fake==TRUE){ nuplotzoom=nuplotzoom+geom_vline(xintercept = fake.beta/(4*Ne))} else{ nuplotzoom=nuplotzoom+geom_vline(xintercept = mean(nu.samples)) }
 
 #GAMMA
 prior.s=rexp(length(s.samples),rates[3])
@@ -253,13 +254,13 @@ splot<-ggplot(data.frame(post.s,prior.s)) +
     geom_histogram(aes(prior.s),bins=30,alpha=0.2,fill=cbPalette[1])+
     scale_x_log10()+
     xlab("s")
-if(fake==TRUE){ splot=splot+geom_vline(xintercept = fake.gamma/(4*Ne))} else{ splot=splot+geom_vline(xintercept = mean.s) }
+if(fake==TRUE){ splot=splot+geom_vline(xintercept = fake.gamma/(4*Ne))} else{ splot=splot+geom_vline(xintercept = mean(s.samples)) }
 
 splotzoom<-ggplot(data.frame(post.s)) + 
     geom_histogram(aes(post.s),fill=cbPalette[4],bins=30)+
     xlab("s")+
     theme(axis.text=element_text(size=6))
-if(fake==TRUE){ splotzoom=splotzoom+geom_vline(xintercept = fake.gamma/(4*Ne))}  else{ splotzoom=splotzoom+geom_vline(xintercept = mean.s) }
+if(fake==TRUE){ splotzoom=splotzoom+geom_vline(xintercept = fake.gamma/(4*Ne))}  else{ splotzoom=splotzoom+geom_vline(xintercept = mean(s.samples)) }
 
 #PLOT
 plot_grid(mtrace,ntrace,strace,muplot,nuplot,splot,muplotzoom,nuplotzoom,splotzoom,ncol=3,rel_heights=c(1.5,1,1),align="v")
@@ -289,5 +290,5 @@ points(post_sfs~c(0:max(k)),cex=1,col=cbPalette[2],pch=19)
 legend("top",legend=c("observed","mode of posterior"),fill=c("black",cbPalette[2]))
 
 #WRITE TO FILE
-write.table(file="~/Desktop/posts.txt",data.frame(post.mu,post.nu,post.s),quote=F,row.name=F,sep="\t")
+write.table(file="./posts.txt",data.frame(post.mu,post.nu,post.s),quote=F,row.name=F,sep="\t")
 
