@@ -9,6 +9,18 @@ txdb
 exonsBy(txdb, by="gene")
 
 
+### Set some values 
+
+conditional=FALSE #use only conditional likelihood
+Ne=150000 #replace with estimated Ne from SNP data
+ngen = 100000 # Set the number of generations.
+sample.freq = 100 # Set the sample frequency.
+l.samples = rep(NA,ngen/sample.freq) # Initialize a likelihood vector with length equal to the number of samples.
+p.samples = vector("list", ngen/sample.freq)  # Initialize a prior list with length equal to the number of samples.
+mu.samples=rep(NA,ngen/sample.freq) # Initialize a posterior vector for each param 
+nu.samples = rep(NA,ngen/sample.freq)  #
+s.samples = rep(NA,ngen/sample.freq)  #
+acceptances = vector("list", ngen)  # List of when param changes were accepted.
 
 
 library("data.table", lib="~/bin/Rlib")
