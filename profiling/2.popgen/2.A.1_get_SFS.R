@@ -11,17 +11,6 @@ exonsBy(txdb, by="gene")
 
 ### Set some values 
 
-conditional=FALSE #use only conditional likelihood
-Ne=150000 #replace with estimated Ne from SNP data
-ngen = 100000 # Set the number of generations.
-sample.freq = 100 # Set the sample frequency.
-l.samples = rep(NA,ngen/sample.freq) # Initialize a likelihood vector with length equal to the number of samples.
-p.samples = vector("list", ngen/sample.freq)  # Initialize a prior list with length equal to the number of samples.
-mu.samples=rep(NA,ngen/sample.freq) # Initialize a posterior vector for each param 
-nu.samples = rep(NA,ngen/sample.freq)  #
-s.samples = rep(NA,ngen/sample.freq)  #
-acceptances = vector("list", ngen)  # List of when param changes were accepted.
-
 
 library("data.table", lib="~/bin/Rlib")
 
@@ -62,7 +51,32 @@ getcount <- function(x, mmin=0.3, mmax=0.7){
 }
 
 
-sfs <- getsfs(context="CG", cols=3:22, BINSIZE=100)
+sfs <- getsfs(context="CHG", cols=3:22, BINSIZE=100)
 write.table(mysfs, "cache/sfs_test.csv", sep=",", row.names=FALSE, quote=FALSE)
 
-    
+
+library(GenomicFeatures)    
+gff <- read.table("~/dbcenter/AGP/AGPv2/ZmB73_5b_FGS.gff")
+names(gff) <- c("seqname", "source", "feature", "start", "end", "score",
+                "strand", "frame", "attribute")
+
+gene <- subset(gff, feature=="gene")
+gene$attribute <- gsub("ID=", "", gene$attribute)
+gene$attribute <- gsub(";.*", "", gene$attribute)
+gene <- subset(gene, seqname %in% 1:10)
+
+gene$strand <- as.character(gene$strand)
+gr0 = with(gene, GRanges(seqnames=seqname, IRanges(start=start, end=end), strand=strand, geneid=attribute ))
+
+###########
+gr1 = with(cg, GRanges(seqnames=V1, IRanges(start=V2, end=V2), strand=V3, C=V4, CT=V5))
+ex1 = findOverlaps(gr0, gr1)
+ranges(gr0)[queryHits(ex1)] = ranges(gr1)[subjectHits(ex1)]
+
+gr1$geneid[subjectHits(ex1)] <- gr0$geneid[queryHits(ex1)]
+
+gr2 <- as.data.frame(gr1)
+gr2 <- as.data.table(gr2)
+
+
+res <- gr2[, .(mm=mean(mean), mv=mean(var)), by=geneid]
