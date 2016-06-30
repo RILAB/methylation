@@ -6,6 +6,11 @@ library(GenomicFeatures)
 library("data.table")
 
 res <- read.csv("cache/stat_exon_mean_var.csv")
+
+
+
+
+
 RAdata <- fread("largedata/vcf_files/teo20_RA_exon.txt")
 
 
