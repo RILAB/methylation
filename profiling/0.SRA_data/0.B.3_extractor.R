@@ -7,8 +7,7 @@ library(GenomicRanges)
 
 ###########
 meth1 <- fread("largedata/bismark/SRR850332_pe.CX_report.txt")
-
-exon1 <- meth1[V6 == "CG"]
+cg <- meth1[V6 == "CG"]
 
 
 
