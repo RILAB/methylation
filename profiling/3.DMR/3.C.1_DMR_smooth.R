@@ -76,3 +76,7 @@ head(getCoverage(res))
 
 head(getMeth(res, type="smooth"))
 
+methf$sm <- getMeth(res, type="smooth")
+
+write.table(methf[, c("chr", "pos", "pos", "sm")], "largedata/chr10.txt", sep="\t", row.names=FALSE, quote=FALSE)
+
