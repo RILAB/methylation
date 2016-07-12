@@ -48,4 +48,31 @@ read.lister <- function(file) {
 meth1 <- fread("largedata/bismark/SRR850332_pe.CX_report.txt")
 cg <- meth1[V6 == "CG"]
 
+library(data.table)
+meth2 <- fread("largedata/vcf_files/chr10_1000k.txt")
+
+meth2 <- meth2[V3 == "CG"]
+meth3 <- meth2[, .(V1, V2, V3, V4, V5)]
+meth3 <- as.data.frame(meth3)
+
+methf <- subset(meth3, V5 != "." & V2=="+")
+
+library(bsseq)
+
+#tmp <- dat[dat$strand == "+",]
+methf$V4 <- as.numeric(as.character(methf$V4))
+methf$V5 <- as.numeric(as.character(methf$V5))
+methf$pos <- as.numeric(gsub(".*_", "", methf$V1))
+methf$chr <- as.numeric(gsub("_.*", "", methf$V1))
+BS.forward <- BSseq(pos = methf$pos, chr = methf$chr,
+                    M = as.matrix(methf$V4, ncol = 1),
+                    Cov = as.matrix(methf$V5, ncol = 1), sampleNames = "forward")
+
+res <- BSmooth(BS.forward, ns = 70, h = 1000, maxGap = 10^8,
+        parallelBy = c("sample", "chromosome"), mc.preschedule = FALSE,
+        mc.cores = 1, keep.se = FALSE, verbose = TRUE)
+
+head(getCoverage(res))
+
+head(getMeth(res, type="smooth"))
 
