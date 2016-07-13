@@ -15,7 +15,7 @@ inputdf$out <- gsub("sorted.|_index.*", "", inputdf$out)
 
 ###########
 library(farmeR)
-run_GATK(inputdf[1,], 
+run_GATK(inputdf[1:20,], 
          ref.fa="$HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa",
          gatkpwd="$HOME/bin/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar",
          picardpwd="$HOME/bin/picard-tools-2.1.1/picard.jar",
@@ -24,18 +24,6 @@ run_GATK(inputdf[1,],
          recalBases=FALSE, dbsnp.vcf="dbsnp.vcf", 
          email="yangjl0930@gmail.com",
          runinfo = c(FALSE, "bigmemm", 16))
-
-library(farmeR)
-run_GATK(inputdf[2:20,], 
-         ref.fa="$HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa",
-         gatkpwd="$HOME/bin/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar",
-         picardpwd="$HOME/bin/picard-tools-2.1.1/picard.jar",
-         minscore = 5, markDup=TRUE, addRG=TRUE, 
-         realignInDels=FALSE, indels.vcf="indels.vcf",
-         recalBases=FALSE, dbsnp.vcf="dbsnp.vcf", 
-         email="yangjl0930@gmail.com",
-         runinfo = c(TRUE, "bigmemm", 16))
-
 
 ###############
 gvcf <- list.files(path="largedata/gatk_vcf", pattern="RG.bam$", full.names=TRUE)
