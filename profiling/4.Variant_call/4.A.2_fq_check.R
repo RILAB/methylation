@@ -3,18 +3,26 @@
 ### 3/22/2016
 
 fq <- list.files(path="/group/jrigrp/teosinte-parents/seq-merged", pattern="fastq.gz$", full.names = TRUE)
+df <- data.frame(fq=fq, out=paste0("largedata/fqchk/", gsub(".*/", "", fq), ".qc"))
 
+### run quality checking
+run_fastq_qc(df, q=20, email=NULL, runinfo = c(FALSE, "bigmemh", 1))
+    
+    
+##########################
+files <- list.files(path="largedata/fqchk", pattern="qc", full.names=TRUE)
 
-for(i in 1:length(fq)){
-    shid <- paste0("slurm-script/run_fqchk_", i, ".sh")
-    command <- paste0("seqtk fqchk -q 20 ", fq[i], " > ", paste0("largedata/fqchk/", gsub(".*/", "", fq[i]), ".qc"))
-    cat(command, file=shid, sep="\n", append=FALSE)
+qc <- read.delim(files[1], skip = 2, header=FALSE)
+names(qc) <- c("pos", "bases", "A", "C", "G", "T", "N", "avgQ", "errQ", "low", "high")
+#POS     #bases  %A      %C      %G      %T      %N      avgQ    errQ    %low    %high
+
+df <- data.frame()
+for(i in 1:length(files)){
+    qc <- read.delim(files[i], skip = 2, header=FALSE)
+    names(qc) <- c("pos", "bases", "A", "C", "G", "T", "N", "avgQ", "errQ", "plow", "phigh")
+    #bases <- nrow(qc) -1
+    tem <- data.frame(qc[1, ], bp=nrow(qc) -1, file=files[i])
+    df <- rbind(df, tem)
 }
-shcode <- paste("sh slurm-script/run_fqchk_$SLURM_ARRAY_TASK_ID.sh", sep="\n")
-
-set_array_job2(shid="slurm-script/run_fqchk_run.sh", shcode=shcode,
-              arrayjobs="1-40", wd=NULL, jobid="myjob", email=NULL,
-              run = c(TRUE, "med", "5200", "2"))
-
-
+df$depth <- df$bases/2500000000
 
