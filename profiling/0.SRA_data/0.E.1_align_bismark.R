@@ -33,6 +33,14 @@ set_farm_job(slurmsh = "slurm-script/zip.sh",
              email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemh", "8"))
 
 
+
+
+
+
+
+
+
+
 # for i in *.lz4; do lz4 -d $i | gzip --fast -; done
 files <- list.files(path="/group/jrigrp4/BS_teo20/fastq", pattern="lz4$", full.names = TRUE)
 df <- data.frame(lz4=files, fq=files)
