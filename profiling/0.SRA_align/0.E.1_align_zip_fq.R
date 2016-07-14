@@ -32,11 +32,7 @@ set_farm_job(slurmsh = "slurm-script/gzip.sh",
              shcode = c(cmd9, cmd0, cmd1, cmd2, cmd3, cmd4, cmd5), wd = NULL, jobid = "lz4",
              email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemm", "8"))
 
+### fq stat
 
-
-
-
-
-########### alignment
 
 
