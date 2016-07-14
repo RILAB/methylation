@@ -23,22 +23,5 @@ run_GATK_JointGenotype(
 )
 
 
-### transform to BCF 
-library("farmeR")
-cmd1 <- "cd largedata/gatk_vcf "
-cmd2 <- "bgzip JRI20_joint_call.filtered_snps.vcf -@ 4"
-cmd3 <- "tabix -p vcf JRI20_joint_call.filtered_snps.vcf.gz"
-cmd <- "bcftools convert JRI20_joint_call.filtered_snps.vcf -r 1:1-1000 -Ou -o JRI20_joint_call.filtered_snps"
 
-
-set_farm_job(slurmsh = "largedata/GenSel/CL_test.sh",
-             shcode = "sh largedata/myscript.sh", wd = NULL, jobid = "myjob",
-             email = NULL, runinfo = c(TRUE, "bigmemh", "1"))
-
-
-
-###
-files <- list.files(path = "largedata/gatk_vcf", pattern="\\.-.*png", full.names = TRUE, all.files=TRUE)
-file.rename(from=files, to=gsub("\\.-", "", files))
-            
             

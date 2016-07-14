@@ -9,20 +9,22 @@ df <- data.frame(fq=fq, out=paste0("largedata/fqchk/", gsub(".*/", "", fq), ".qc
 run_fastq_qc(df, q=20, email=NULL, runinfo = c(FALSE, "bigmemh", 1))
     
     
-##########################
+### get summary stat
 files <- list.files(path="largedata/fqchk", pattern="qc", full.names=TRUE)
+res <- get_qc(files, genomesize=2500000000)
+write.table(res, "cache/teo20_fastq_qc.csv", sep=",", row.names=FALSE, quote=FALSE)
 
-qc <- read.delim(files[1], skip = 2, header=FALSE)
-names(qc) <- c("pos", "bases", "A", "C", "G", "T", "N", "avgQ", "errQ", "low", "high")
-#POS     #bases  %A      %C      %G      %T      %N      avgQ    errQ    %low    %high
+### plot results
 
-df <- data.frame()
-for(i in 1:length(files)){
-    qc <- read.delim(files[i], skip = 2, header=FALSE)
-    names(qc) <- c("pos", "bases", "A", "C", "G", "T", "N", "avgQ", "errQ", "plow", "phigh")
-    #bases <- nrow(qc) -1
-    tem <- data.frame(qc[1, ], bp=nrow(qc) -1, file=files[i])
-    df <- rbind(df, tem)
-}
-df$depth <- df$bases/2500000000
+res <- read.csv("cache/teo20_fastq_qc.csv")
+
+idx <- seq(from=1, to =40, by=2)
+dp <- res[idx,]
+dp$depth <- 2*dp$depth
+dp$file <- gsub(".*Sample_|_index.*", "", dp$file)
+
+par(mfrow=c(1,2))
+barplot(dp$avgQ, names.arg=dp$file, col="#8b2323", las=2, main="Avg Base Quality (N=20)")
+barplot(dp$depth, names.arg=dp$file, col="#458b74", las=2, main="Read Depth (N=20)")
+
 

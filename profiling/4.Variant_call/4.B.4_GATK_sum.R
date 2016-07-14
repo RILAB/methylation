@@ -1,30 +1,36 @@
 ### Jinliang Yang
-### April 26th, 2016
+### July 13th, 2016
 
-gvcf <- list.files(path="largedata/gatk_vcf", pattern="RG.bam$", full.names=TRUE)
+### transform SNP to BCF 
+library("farmeR")
+cmd1 <- "cd largedata/gatk_vcf "
+cmd2 <- "bgzip JRI20_joint_call.filtered_snps.vcf -@ 4"
+cmd3 <- "tabix -p vcf JRI20_joint_call.filtered_snps.vcf.gz"
+cmd4 <- "bcftools convert JRI20_joint_call.filtered_snps.vcf.gz -Ou -o JRI20_joint_call.filtered_snps.bcf"
+
+set_farm_job(slurmsh = "largedata/GenSel/CL_test.sh",
+             shcode = "sh largedata/myscript.sh", wd = NULL, jobid = "myjob",
+             email = NULL, runinfo = c(TRUE, "bigmemh", "1"))
+
+### transform InDels to BCF 
+cmd1 <- "cd largedata/gatk_vcf "
+cmd2 <- "bgzip JRI20_joint_call.filtered_indels.vcf -@ 8"
+cmd3 <- "tabix -p vcf JRI20_joint_call.filtered_indels.vcf.gz"
+cmd4 <- "bcftools convert JRI20_joint_call.filtered_indels.vcf.gz -Ou -o JRI20_joint_call.filtered_indels.bcf"
+cmd5 <- "bcftools stats JRI20_joint_call.filtered_indels.bcf > JRI20_filtered_indels.stat"
+cmd6 <- "plot-vcfstats --main-title InDels -p indel_plots/ JRI20_filtered_indels.stat"
+
+set_farm_job(slurmsh = "slurm-script/vcf2bcf.sh",
+             shcode = c(cmd1, cmd2, cmd3, cmd4, cmd5, cmd6), wd = NULL, jobid = "myjob",
+             email = NULL, runinfo = c(TRUE, "bigmemm", "8"))
 
 
-bamfile <- list.files(path="/home/jolyang/Documents/Github/methylation/largedata/gatk_vcf",
-                      pattern="RG.bam$", full.names=TRUE)
-inputdf <- data.frame(
-    bam=bamfile, 
-    out=bamfile, 
-    group="1", 
-    sample=gsub(".*/|.sorted.*", "", bamfile),
-    PL="illumina", LB="lib1", PU="unit1")
-inputdf$out <- gsub(".sorted.*", "", inputdf$out)
+### check BCF summary and plot
+cmd1 <- "bcftools stats JRI20_joint_call.filtered_indels.bcf > JRI20_filtered_indels.stat"
+cmd2 <- "plot-vcfstats --main-title teo20 -p plotall/ JRI20_snps.stat JRI20_filtered_indels.stat"
 
-###########
-library(farmeR)
-run_GATK(inputdf[-1,], 
-         ref.fa="$HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa",
-         gatkpwd="$HOME/bin/GenomeAnalysisTK-3.5/GenomeAnalysisTK.jar",
-         picardpwd="$HOME/bin/picard-tools-2.1.1/picard.jar",
-         minscore = 5, markDup=FALSE, addRG=FALSE, 
-         realignInDels=FALSE, indels.vcf="indels.vcf",
-         recalBases=FALSE, dbsnp.vcf="dbsnp.vcf", 
-         email="yangjl0930@gmail.com",
-         runinfo = c(FALSE, "bigmemm", 16))
 
-###>>> In this path: cd /home/jolyang/Documents/Github/methylation
-###>>> RUN: sbatch -p bigmemm --mem 140000 --ntasks=16 slurm-script/run_gatk_array.sh
+
+###
+files <- list.files(path = "largedata/gatk_vcf", pattern="\\.-.*png", full.names = TRUE, all.files=TRUE)
+file.rename(from=files, to=gsub("\\.-", "", files))
