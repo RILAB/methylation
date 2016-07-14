@@ -12,7 +12,9 @@ library(farmeR)
 "bcftools consensus -i -s NA001 -f in.fa in.vcf.gz > out.fa"
 
 
-cmd <- "bcftools consensus -i -f $HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa largedata/gatk_vcf/JRI20_joint_call.filtered_indels.vcf.gz -o largedata/pgenome/teo20.fa"
+cmd <- paste("bcftools consensus -i -f $HOME/dbcenter/AGP/AGPv2/Zea_mays.AGPv2.14.dna.toplevel.fa",
+             "largedata/gatk_vcf/JRI20_joint_call.filtered_snps.vcf.gz", 
+             "-o largedata/pgenome/teo20.fa")
 
 set_farm_job(slurmsh = "slurm-script/bcf2cons.sh",
              shcode = cmd, wd = NULL, jobid = "cns",

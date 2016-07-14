@@ -20,7 +20,7 @@ set_farm_job(slurmsh = "slurm-script/pgenome.sh",
 # for i in *.lz4; do rm $i; done
 
 ### prepare genome
-cmd9 <- "mv /group/jrigrp4/BS_teo20/fastq/JRA2_TGACCA_R2.fastq.lz4 largedata/fastq/"
+cmd9 <- "mv /group/jrigrp4/BS_teo20/fastq/*.lz4 largedata/fastq/"
 cmd0 <- "cd largedata/fastq"
 cmd1 <- "for i in *.lz4; do"
 cmd2 <- " lz4 -d $i > $i.fastq;"
@@ -28,9 +28,9 @@ cmd3 <- " rm $i;"
 cmd4 <- " gzip $i.fastq"
 cmd5 <- "done"
     
-set_farm_job(slurmsh = "slurm-script/zip.sh",
-             shcode = c(cmd0, cmd1, cmd2, cmd3, cmd4, cmd5), wd = NULL, jobid = "lz4",
-             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemh", "8"))
+set_farm_job(slurmsh = "slurm-script/gzip.sh",
+             shcode = c(cmd9, cmd0, cmd1, cmd2, cmd3, cmd4, cmd5), wd = NULL, jobid = "lz4",
+             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemm", "8"))
 
 
 
@@ -50,16 +50,16 @@ set_array_job(shid = "largedata/GenSel/CL_test.sh",
               jobid = "myjob", email = NULL, runinfo = c(TRUE, "bigmemh", "1"))
 
 
-
+########### alignment
 fq1 <- list.files(path="largedata/fastq", pattern="R1.fastq.gz$", full.names = TRUE)
 fq2 <- list.files(path="largedata/fastq", pattern="R2.fastq.gz$", full.names = TRUE)
 
 bamfiles <- list.files(path="/group/jrigrp4/BS_teo20/WGBS/BSM", pattern="bam$", full.names = TRUE)
 
 
-inputdf <- data.frame(fq1 = fq1[c(1,4)], 
-                      fq2 = fq2[c(1,4)],
-                      outbase = "test", 
+inputdf <- data.frame(fq1 = fq1, 
+                      fq2 = fq2[1],
+                      outbase = "pgen", 
                       bam = bamfiles[c(1,4)])
 
 run_bismark(inputdf, genome = "/home/jolyang/dbcenter/AGP/AGPv2",
