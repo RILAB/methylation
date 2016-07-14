@@ -25,7 +25,7 @@ cmd0 <- "cd largedata/fastq"
 cmd1 <- "for i in *.lz4; do"
 cmd2 <- " lz4 -d $i > $i.fastq;"
 cmd3 <- " rm $i;"
-cmd4 <- " gzip $i.fastq"
+cmd4 <- " pigz -p 8 $i.fastq"
 cmd5 <- "done"
     
 set_farm_job(slurmsh = "slurm-script/gzip.sh",

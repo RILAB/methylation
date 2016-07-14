@@ -20,6 +20,7 @@ set_farm_job(slurmsh = "slurm-script/bcf2cons.sh",
              shcode = cmd, wd = NULL, jobid = "cns",
              email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemm", "8"))
 
-
+### checking results
+"samtools faidx teo20.fa 1:1-10000"
 
 

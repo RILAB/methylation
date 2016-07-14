@@ -21,8 +21,10 @@ run_bismark(inputdf, genome = "/home/jolyang/dbcenter/AGP/AGPv2",
             N = 1, align = TRUE,
             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemm", 8))
 
-### AGPv2
-run_bismark(inputdf, genome = "/home/jolyang/dbcenter/AGP/AGPv2",
+### pesudo-ref
+### note: for alignment, "bam" col should not present.
+inputdf <- data.frame(fq1 = fq1[1], fq2 = fq2[1], outbase = "pg_JRA1")
+run_bismark(inputdf, genome = "/home/jolyang/Documents/Github/methylation/largedata/pgenome",
             outdir = "/home/jolyang/Documents/Github/methylation/largedata/bismark", 
             N = 1, align = TRUE,
             email = "yangjl0930@gmail.com", runinfo = c(TRUE, "bigmemm", 8))
