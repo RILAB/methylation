@@ -29,8 +29,3 @@ set_farm_job(slurmsh = "slurm-script/vcf2bcf.sh",
 cmd1 <- "bcftools stats JRI20_joint_call.filtered_indels.bcf > JRI20_filtered_indels.stat"
 cmd2 <- "plot-vcfstats --main-title teo20 -p plotall/ JRI20_snps.stat JRI20_filtered_indels.stat"
 
-
-
-###
-files <- list.files(path = "largedata/gatk_vcf", pattern="\\.-.*png", full.names = TRUE, all.files=TRUE)
-file.rename(from=files, to=gsub("\\.-", "", files))
